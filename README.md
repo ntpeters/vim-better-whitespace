@@ -1,6 +1,9 @@
+Vim Whitespace Plugin
+=====================
 This plugin causes all trailing whitespace and tab characters to be
 highlighted in red by default. Whitespace for the current line will not be highlighted
-while in insert mode.
+while in insert mode. It is possible to disable current line highlighting while in other
+modes as well (see options below).
 
 To set a custom highlight color, just call:
 ```
