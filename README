@@ -2,6 +2,9 @@ This plugin causes all trailing whitespace and tab characters to be
 highlighted in red. Whitespace for the current line will not be highlighted
 while in insert mode.
 
+To set a custom highlight color, just call:
+highlight ExtraWhitespace ctermbg=<desired_color>
+
 To toggle whitespace highlighting, call :ToggleWhitespace.
 
 To disable highlighting for the current line in normal mode call
