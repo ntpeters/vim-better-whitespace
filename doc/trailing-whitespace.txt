@@ -2,6 +2,7 @@
 
 
 This plugin causes all trailing whitespace to be highlighted in red.
+Whitespace will not be highlighted for the current line while in insert mode.
 
 
                                                 *FixWhitespace*
@@ -10,7 +11,42 @@ To fix the whitespace errors, just call :FixWhitespace.  By default it
 operates on the entire file.  Pass a range (or use V to select some lines)
 to restrict the portion of the file that gets fixed.
 
-The repo is at http://github.com/bronson/vim-trailing-whitespace
+                                                *EnableWhitespace*
 
-Originally based on http://vim.wikia.com/wiki/Highlight_unwanted_spaces
+To enable whitespace highlighting, call :EnableWhitespace. This will enable
+highlighting of extraneous whitespace for the entire file.
+
+                                                *DisableWhitespace*
+
+To disable whitespace highlighting, call :DisableWhitespace. This will disable
+highlighting of extraneous whitespace for the entire file.
+
+                                                *ToggleWhitespace*
+
+Call :ToggleWhitespace to toggle whitespace highlighting on/off.
+
+                                                *CurrentLineWhitespaceOff*
+
+Calling :CurrentLineWhitespaceOff with the option either 'hard' or 'soft' will
+disable whitespace highlighting for the currentline.
+
+If 'hard' option is used, then all highlighting remains the same except that
+the current line is not highlighted.
+WARNING: Since this uses CursorMoved events to prevent highlighting of the
+current line there is a chance this can cause a significant slow down of Vim,
+especially with regard to large files.
+
+If the 'soft' option is used, then highlighting will have a lower priority
+potentially causing this highlighting to be overwritten by other, higher
+priority highlighting.  The benefit is that there should be no slowdown with
+this option.
+
+                                                *CurrentLineWhitespaceOn
+
+Call :CurrentLineWhitespaceOn to enable whitespace highlighting for the current
+line. Highlighting is still disabled for the current line while in inserte mode
+
+The repo is at http://github.com/ntpeters/vim-better-whitespace
+
+Originally based on http://github.com/bronson/vim-trailing-whitespace
 
