@@ -11,6 +11,10 @@ To fix the whitespace errors, just call :FixWhitespace.  By default it
 operates on the entire file.  Pass a range (or use V to select some lines)
 to restrict the portion of the file that gets fixed.
 
+                                                *ToggleFixWhitespaceOnSave*
+                                               
+This enables/disables stripping of extra whitespace on file save.
+
                                                 *EnableWhitespace*
 
 To enable whitespace highlighting, call :EnableWhitespace. This will enable
