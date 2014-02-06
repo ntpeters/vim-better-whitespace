@@ -15,12 +15,16 @@ let g:current_line_whitespace_disabled=0
 " patterns with higher priority.
 let g:current_line_whitespace_disabled_soft=0
 
+" Set this to enable stripping whitespace on file save
+let g:strip_whitespace_on_save=0
+
 " Only init once
 let s:trailing_whitespace_initialized=0
 
 " Highlight EOL whitespace, http://vim.wikia.com/wiki/Highlight_unwanted_spaces
 function! s:WhitespaceInit()
     highlight default clear ExtraWhitespace
+    highlight ExtraWhitespace ctermbg=red
     let g:trailing_whitespace_initialized=1
 endfunction
 
@@ -28,7 +32,6 @@ endfunction
 function! s:EnableWhitespace()
     let g:trailing_whitespace_enabled=1
     call <SID>WhitespaceInit()
-    highlight ExtraWhitespace ctermbg=red
     match ExtraWhitespace /\(\s\+$\)\|\(\t\+\)/
 endfunction
 
@@ -77,8 +80,20 @@ function! s:FixWhitespace(line1,line2)
     call setpos('.', l:save_cursor)
 endfunction
 
+" Strips whitespace on file save
+function! s:ToggleFixWhitespaceOnSave()
+    if g:strip_whitespace_on_save==0
+        let g:strip_whitespace_on_save=1
+    else
+        let g:strip_whitespace_on_save=0
+    endif
+    call <SID>RunAutoCommands()
+endfunction
+
 " Run :FixWhitespace to remove end of line white space
 command! -range=% FixWhitespace call <SID>FixWhitespace(<line1>,<line2>)
+" Run :ToggleFixWhitespaceOnSave to enable/disable whitespace stripping on save
+command! -range=% ToggleFixWhitespaceOnSave call <SID>ToggleFixWhitespaceOnSave()
 " Run :EnableWhitespace to enable whitespace highlighting
 command! -range=% EnableWhitespace call <SID>EnableWhitespace()
 " Run :DisableWhitespace to disable whitespace highlighting
@@ -129,6 +144,11 @@ function! <SID>RunAutoCommands()
                 autocmd InsertEnter * syn clear ExtraWhitespace | syn match ExtraWhitespace excludenl /\s\+\%#\@!$/
                 autocmd InsertLeave,BufReadPost * syn clear ExtraWhitespace | syn match ExtraWhitespace excludenl /\s\+$/
             endif
+        endif
+
+        " Strip whitespace on save if enabled
+        if g:strip_whitespace_on_save==1
+            autocmd BufWritePre * call <SID>FixWhitespace(0,line("$"))
         endif
 
     augroup END
