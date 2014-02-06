@@ -21,10 +21,12 @@ let g:strip_whitespace_on_save=0
 " Only init once
 let s:trailing_whitespace_initialized=0
 
+
 " Highlight EOL whitespace, http://vim.wikia.com/wiki/Highlight_unwanted_spaces
 function! s:WhitespaceInit()
-    highlight default clear ExtraWhitespace
-    highlight ExtraWhitespace ctermbg=red
+    if hlexists("ExtraWhitespace")==0
+        highlight ExtraWhitespace ctermbg=red
+    endif
     let g:trailing_whitespace_initialized=1
 endfunction
 
