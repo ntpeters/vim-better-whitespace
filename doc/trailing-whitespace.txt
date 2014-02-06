@@ -46,7 +46,6 @@ this option.
 Call :CurrentLineWhitespaceOn to enable whitespace highlighting for the current
 line. Highlighting is still disabled for the current line while in inserte mode
 
-The repo is at http://github.com/ntpeters/vim-better-whitespace
+The main repository is at http://github.com/bronson/vim-trailing-whitespace
 
-Originally based on http://github.com/bronson/vim-trailing-whitespace
-
+Originally based on http://vim.wikia.com/wiki/Highlight_unwanted_spaces
