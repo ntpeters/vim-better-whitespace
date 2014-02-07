@@ -133,7 +133,7 @@ function! <SID>RunAutoCommands()
                 " Check if current line highglighting is disabled
                 if g:current_line_whitespace_disabled==1
                     " Never highlight whitespace on current line
-                    autocmd InsertEnter,CursorMoved * exe 'match ExtraWhitespace ' . '/\%<' . line(".") .  'l\(\s\+$\)\|\(\t\+\)\|\%>' . line(".") .  'l\(\s\+$\)\|\(\t\+\)/'
+                    autocmd InsertEnter,CursorMoved,CursorMovedI * exe 'match ExtraWhitespace ' . '/\%<' . line(".") .  'l\(\s\+$\)\|\(\t\+\)\|\%>' . line(".") .  'l\(\s\+$\)\|\(\t\+\)/'
                 else
                     " When in insert mode, do not highlight whitespae on the current line
                     autocmd InsertEnter,CursorMovedI * exe 'match ExtraWhitespace ' . '/\%<' . line(".") .  'l\(\s\+$\)\|\(\t\+\)\|\%>' . line(".") .  'l\(\s\+$\)\|\(\t\+\)/'
