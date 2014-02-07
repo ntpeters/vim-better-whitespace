@@ -61,10 +61,13 @@ endfunction
 function! s:CurrentLineWhitespaceOff(level)
     if a:level=='hard'
         let g:current_line_whitespace_disabled=1
+        let g:current_line_whitespace_disabled_soft=0
     elseif a:level=='soft'
         let g:current_line_whitespace_disabled_soft=1
+        let g:current_line_whitespace_disabled=0
     endif
-
+    match ExtraWhitespace ''
+    call <SID>RunAutoCommands()
 endfunction
 
 " Enables whitespace highlighting for the current line
@@ -95,18 +98,18 @@ endfunction
 " Run :FixWhitespace to remove end of line white space
 command! -range=% FixWhitespace call <SID>FixWhitespace(<line1>,<line2>)
 " Run :ToggleFixWhitespaceOnSave to enable/disable whitespace stripping on save
-command! -range=% ToggleFixWhitespaceOnSave call <SID>ToggleFixWhitespaceOnSave()
+command! -nargs=* ToggleFixWhitespaceOnSave call <SID>ToggleFixWhitespaceOnSave()
 " Run :EnableWhitespace to enable whitespace highlighting
-command! -range=% EnableWhitespace call <SID>EnableWhitespace()
+command! -nargs=* EnableWhitespace call <SID>EnableWhitespace()
 " Run :DisableWhitespace to disable whitespace highlighting
-command! -range=% DisableWhitespace call <SID>DisableWhitespace()
+command! -nargs=* DisableWhitespace call <SID>DisableWhitespace()
 " Run :ToggleWhitespace to toggle whitespace highlighting on/off
-command! -range=% ToggleWhitespace call <SID>ToggleWhitespace()
+command! -nargs=* ToggleWhitespace call <SID>ToggleWhitespace()
 " Run :CurrentLineWhitespaceOff(level) to disable highlighting for the current
 " line. Levels are: 'hard' and 'soft'
-command! -range=% CurrentLineWhitespaceOff call <SID>CurrentLineWhitespaceOff(level)
+command! -nargs=* CurrentLineWhitespaceOff call <SID>CurrentLineWhitespaceOff(<f-args>)
 " Run :CurrentLineWhitespaceOn to turn on whitespace for the current line
-command! -range=% CurrentLineWhitespaceOn call <SID>CurrentLineWhitespaceOn()
+command! -nargs=* CurrentLineWhitespaceOn call <SID>CurrentLineWhitespaceOn()
 
 " Process auto commands upon load
 autocmd VimEnter,WinEnter,BufEnter,FileType * call <SID>RunAutoCommands()
