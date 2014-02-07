@@ -13,11 +13,11 @@ highlight ExtraWhitespace ctermbg=<desired_color>
 To toggle whitespace highlighting, call `:ToggleWhitespace`.
 
 To disable highlighting for the current line in normal mode call
-`:CurrentLineWhitespaceOff` with either 'hard' or 'soft' as an option.
-The option 'hard' will maintain whitespace highlighting as it is, but may
+`:CurrentLineWhitespaceOff` with either `hard` or `soft` as an option.
+The option `hard` will maintain whitespace highlighting as it is, but may
 cause a slow down in Vim since it uses the CursorMoved event to detect and 
 exclude the current line.
-The option 'soft' will use syntax based highlighting, so there shouldn't be
+The option `soft` will use syntax based highlighting, so there shouldn't be
 a performance hit like with the 'hard' option.  The drawback is that this
 highlighting will have a lower priority and may be overwritten by higher
 priority highlighting.
