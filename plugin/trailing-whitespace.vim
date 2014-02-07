@@ -21,9 +21,9 @@ let g:strip_whitespace_on_save=0
 " Only init once
 let s:trailing_whitespace_initialized=0
 
-
-" Highlight EOL whitespace, http://vim.wikia.com/wiki/Highlight_unwanted_spaces
+" Ensure the 'ExtraWhitespace' highlight group has been defined
 function! s:WhitespaceInit()
+    " Check if the user has already defined highlighting for this group
     if hlexists("ExtraWhitespace")==0
         highlight ExtraWhitespace ctermbg=red
     endif
@@ -34,12 +34,16 @@ endfunction
 function! s:EnableWhitespace()
     let g:trailing_whitespace_enabled=1
     call <SID>WhitespaceInit()
+    call <SID>RunAutoCommands()
+    " Match default whitespace
     match ExtraWhitespace /\s\+$/
 endfunction
 
 " Disable the whitespace highlighting
 function! s:DisableWhitespace()
     let g:trailing_whitespace_enabled=0
+    call <SID>RunAutoCommands()
+    " Clear current whitespace matches
     match ExtraWhitespace ''
 endfunction
 
@@ -59,6 +63,7 @@ endfunction
 " soft - No potential slowdown as with 'hard' option, but other highlighting
 "        rules of higher priority may overwrite these whitespace highlights.
 function! s:CurrentLineWhitespaceOff(level)
+    " Set current line whitespace level
     if a:level=='hard'
         let g:current_line_whitespace_disabled=1
         let g:current_line_whitespace_disabled_soft=0
@@ -66,7 +71,9 @@ function! s:CurrentLineWhitespaceOff(level)
         let g:current_line_whitespace_disabled_soft=1
         let g:current_line_whitespace_disabled=0
     endif
+    " Clear current whitespace matches
     match ExtraWhitespace ''
+    " Re-run auto commands with the new settings
     call <SID>RunAutoCommands()
 endfunction
 
@@ -98,18 +105,18 @@ endfunction
 " Run :FixWhitespace to remove end of line white space
 command! -range=% FixWhitespace call <SID>FixWhitespace(<line1>,<line2>)
 " Run :ToggleFixWhitespaceOnSave to enable/disable whitespace stripping on save
-command! -nargs=* ToggleFixWhitespaceOnSave call <SID>ToggleFixWhitespaceOnSave()
+command! ToggleFixWhitespaceOnSave call <SID>ToggleFixWhitespaceOnSave()
 " Run :EnableWhitespace to enable whitespace highlighting
-command! -nargs=* EnableWhitespace call <SID>EnableWhitespace()
+command! EnableWhitespace call <SID>EnableWhitespace()
 " Run :DisableWhitespace to disable whitespace highlighting
-command! -nargs=* DisableWhitespace call <SID>DisableWhitespace()
+command! DisableWhitespace call <SID>DisableWhitespace()
 " Run :ToggleWhitespace to toggle whitespace highlighting on/off
-command! -nargs=* ToggleWhitespace call <SID>ToggleWhitespace()
+command! ToggleWhitespace call <SID>ToggleWhitespace()
 " Run :CurrentLineWhitespaceOff(level) to disable highlighting for the current
 " line. Levels are: 'hard' and 'soft'
 command! -nargs=* CurrentLineWhitespaceOff call <SID>CurrentLineWhitespaceOff(<f-args>)
 " Run :CurrentLineWhitespaceOn to turn on whitespace for the current line
-command! -nargs=* CurrentLineWhitespaceOn call <SID>CurrentLineWhitespaceOn()
+command! CurrentLineWhitespaceOn call <SID>CurrentLineWhitespaceOn()
 
 " Process auto commands upon load
 autocmd VimEnter,WinEnter,BufEnter,FileType * call <SID>RunAutoCommands()
