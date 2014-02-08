@@ -68,6 +68,8 @@ To enable/disable stripping of extra whitespace on file save, call:
 :ToggleFixWhitespaceOnSave
 ```
 
+
+
 The main repository is at http://github.com/ntpeters/vim-better-whitespace
 
 Forked from: http://github.com/bronson/vim-trailing-whitespace
