@@ -67,8 +67,12 @@ To enable/disable stripping of extra whitespace on file save, call:
 ```
 :ToggleFixWhitespaceOnSave
 ```
-
-
+This will strip all trailing whitespace everytime you save the file for all file
+types.  If you would prefer to only stip whitespace for certain filetypes, add
+the following to your `~/.vimrc`:
+```
+autocmd FileType <list_of_desired_filetypes> autocmd BufWritePre <buffer> FixWhitespace
+```
 
 The main repository is at http://github.com/ntpeters/vim-better-whitespace
 
