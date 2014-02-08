@@ -39,7 +39,7 @@ To disable highlighting for the current line in normal mode call:
 ```
 :CurrentLineWhitespaceOff <level>
 ```
-Were `<level>` is either `hard` or `soft`.
+Where `<level>` is either `hard` or `soft`.
 
 The level `hard` will maintain whitespace highlighting as it is, but may
 cause a slow down in Vim since it uses the CursorMoved event to detect and
