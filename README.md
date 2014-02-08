@@ -46,7 +46,7 @@ cause a slow down in Vim since it uses the CursorMoved event to detect and
 exclude the current line.
 
 The level `soft` will use syntax based highlighting, so there shouldn't be
-a performance hit like with the 'hard' option.  The drawback is that this
+a performance hit like with the `hard` option.  The drawback is that this
 highlighting will have a lower priority and may be overwritten by higher
 priority highlighting.
 
