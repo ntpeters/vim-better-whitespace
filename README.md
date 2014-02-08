@@ -71,8 +71,11 @@ This will strip all trailing whitespace everytime you save the file for all file
 types.  If you would prefer to only stip whitespace for certain filetypes, add
 the following to your `~/.vimrc`:
 ```
-autocmd FileType <list_of_desired_filetypes> autocmd BufWritePre <buffer> FixWhitespace
+autocmd FileType <desired_filetypes> autocmd BufWritePre <buffer> FixWhitespace
 ```
+where `<desired_filetypes>` is a comma separated list of the file types you want
+to be stripped of whitespace on file save ( ie. `javascript,c,cpp,java,html,ruby` )
+Note that `<buffer>` is a keyword here and should stay just as it appears in the line above.
 
 The main repository is at http://github.com/ntpeters/vim-better-whitespace
 
