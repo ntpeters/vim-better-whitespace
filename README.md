@@ -3,7 +3,8 @@
 This plugin causes all trailing whitespace characters (spaces and tabs) to be
 highlighted. Whitespace for the current line will not be highlighted
 while in insert mode. It is possible to disable current line highlighting while in other
-modes as well (see options below).
+modes as well (see options below). A helper function `:StripWhitespace` is also provided
+to make whitespace cleaning painless. 
 
 ##Installation
 There are a few ways you can go about installing this plugin:
