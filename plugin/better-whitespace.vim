@@ -104,7 +104,7 @@ function! s:StripWhitespace( line1, line2 )
     let c = col(".")
 
     " Strip the whitespace
-    %s/\s\+$//e
+    silent! execute ':' . a:line1 . ',' . a:line2 . 's/\s\+$//e'
 
     " Restore the saved search and cursor position
     let @/=_s
