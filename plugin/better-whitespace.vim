@@ -97,14 +97,22 @@ function! s:CurrentLineWhitespaceOn()
 endfunction
 
 " Removes all extaneous whitespace in the file
-function! s:FixWhitespace( line1, line2 )
-    let l:save_cursor = getpos(".")
-    silent! execute ':' . a:line1 . ',' . a:line2 . 's/\s\+$//'
-    call setpos( '.', l:save_cursor )
+function! s:StripWhitespace( line1, line2 )
+    " Save the current search and cursor position
+    let _s=@/
+    let l = line(".")
+    let c = col(".")
+
+    " Strip the whitespace
+    %s/\s\+$//e
+
+    " Restore the saved search and cursor position
+    let @/=_s
+    call cursor(l, c)
 endfunction
 
 " Strips whitespace on file save
-function! s:ToggleFixWhitespaceOnSave()
+function! s:ToggleStripWhitespaceOnSave()
     if g:strip_whitespace_on_save == 0
         let g:strip_whitespace_on_save = 1
     else
@@ -113,10 +121,10 @@ function! s:ToggleFixWhitespaceOnSave()
     call <SID>RunAutoCommands()
 endfunction
 
-" Run :FixWhitespace to remove end of line white space
-command! -range=% FixWhitespace call <SID>FixWhitespace( <line1>, <line2> )
-" Run :ToggleFixWhitespaceOnSave to enable/disable whitespace stripping on save
-command! ToggleFixWhitespaceOnSave call <SID>ToggleFixWhitespaceOnSave()
+" Run :StripWhitespace to remove end of line white space
+command! -range=% StripWhitespace call <SID>StripWhitespace( <line1>, <line2> )
+" Run :ToggleStripWhitespaceOnSave to enable/disable whitespace stripping on save
+command! ToggleStripWhitespaceOnSave call <SID>ToggleStripWhitespaceOnSave()
 " Run :EnableWhitespace to enable whitespace highlighting
 command! EnableWhitespace call <SID>EnableWhitespace()
 " Run :DisableWhitespace to disable whitespace highlighting
@@ -170,7 +178,7 @@ function! <SID>RunAutoCommands()
 
         " Strip whitespace on save if enabled
         if g:strip_whitespace_on_save == 1
-            autocmd BufWritePre * call <SID>FixWhitespace( 0, line("$") )
+            autocmd BufWritePre * call <SID>StripWhitespace( 0, line("$") )
         endif
 
     augroup END

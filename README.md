@@ -55,17 +55,15 @@ To re-enable highlighting for the current line in normal mode:
 :CurrentLineWhitespaceOn
 ```
 
-To fix the whitespace errors, call:
-```
-:FixWhitespace
-```
+To clean extra whitespace, call:
+`:StripWhitespace`
 By default it operates on the entire file.
 Pass a range (or use V to select some lines) to restrict the portion of the
-file that gets fixed.
+file that gets stripped.
 
 To enable/disable stripping of extra whitespace on file save, call:
 ```
-:ToggleFixWhitespaceOnSave
+:ToggleStripWhitespaceOnSave
 ```
 This will strip all trailing whitespace everytime you save the file for all file
 types.  If you would prefer to only stip whitespace for certain filetypes, add
