@@ -75,7 +75,8 @@ where `<desired_filetypes>` is a comma separated list of the file types you want
 to be stripped of whitespace on file save ( ie. `javascript,c,cpp,java,html,ruby` )
 Note that `<buffer>` is a keyword here and should stay just as it appears in the line above.
 
-The main repository is at http://github.com/ntpeters/vim-better-whitespace
+Repository exists at: http://github.com/ntpeters/vim-better-whitespace
 
-Forked from: http://github.com/bronson/vim-trailing-whitespace
-Originally based on http://vim.wikia.com/wiki/Highlight_unwanted_spaces
+Based on:
+http://sartak.org/2011/03/end-of-line-whitespace-in-vim.html
+http://vim.wikia.com/wiki/Highlight_unwanted_spaces
