@@ -5,7 +5,7 @@
 if exists( "g:loaded_better_whitespace_plugin" )
     finish
 else
-    let g:loaded_better_whitespace_plugin = 1;
+    let g:loaded_better_whitespace_plugin = 1
 endif
 
 " Set this to enable/disable whitespace highlighting
