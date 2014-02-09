@@ -32,19 +32,24 @@ endfunction
 
 " Enable the whitespace highlighting
 function! s:EnableWhitespace()
-    let g:trailing_whitespace_enabled=1
-    call <SID>WhitespaceInit()
-    call <SID>RunAutoCommands()
-    " Match default whitespace
-    match ExtraWhitespace /\s\+$/
+    if g:trailing_whitespace_enabled==0
+        let g:trailing_whitespace_enabled=1
+        call <SID>WhitespaceInit()
+        " Match default whitespace
+        match ExtraWhitespace /\s\+$/
+        call <SID>RunAutoCommands()
+    endif
 endfunction
 
 " Disable the whitespace highlighting
 function! s:DisableWhitespace()
-    let g:trailing_whitespace_enabled=0
-    call <SID>RunAutoCommands()
-    " Clear current whitespace matches
-    match ExtraWhitespace ''
+    if g:trailing_whitespace_enabled==1
+        let g:trailing_whitespace_enabled=0
+        " Clear current whitespace matches
+        match ExtraWhitespace ''
+        syn clear ExtraWhitespace
+        call <SID>RunAutoCommands()
+    endif
 endfunction
 
 " Toggle whitespace highlighting on/off
@@ -63,26 +68,32 @@ endfunction
 " soft - No potential slowdown as with 'hard' option, but other highlighting
 "        rules of higher priority may overwrite these whitespace highlights.
 function! s:CurrentLineWhitespaceOff(level)
-    " Set current line whitespace level
-    if a:level=='hard'
-        let g:current_line_whitespace_disabled=1
-        let g:current_line_whitespace_disabled_soft=0
-    elseif a:level=='soft'
-        let g:current_line_whitespace_disabled_soft=1
-        let g:current_line_whitespace_disabled=0
+    if g:trailing_whitespace_enabled==1
+        " Set current line whitespace level
+        if a:level=='hard'
+            let g:current_line_whitespace_disabled=1
+            let g:current_line_whitespace_disabled_soft=0
+            syn clear ExtraWhitespace
+            match ExtraWhitespace /\s\+$/
+        elseif a:level=='soft'
+            let g:current_line_whitespace_disabled_soft=1
+            let g:current_line_whitespace_disabled=0
+            match ExtraWhitespace ''
+        endif
+        " Re-run auto commands with the new settings
+        call <SID>RunAutoCommands()
     endif
-    " Clear current whitespace matches
-    match ExtraWhitespace ''
-    " Re-run auto commands with the new settings
-    call <SID>RunAutoCommands()
 endfunction
 
 " Enables whitespace highlighting for the current line
 function! s:CurrentLineWhitespaceOn()
-    let g:current_line_whitespace_disabled=0
-    let g:current_line_whitespace_disabled_soft=0
-    call <SID>RunAutoCommands()
-    match ExtraWhitespace /\s\+$/
+    if g:trailing_whitespace_enabled==1
+        let g:current_line_whitespace_disabled=0
+        let g:current_line_whitespace_disabled_soft=0
+        call <SID>RunAutoCommands()
+        syn clear ExtraWhitespace
+        match ExtraWhitespace /\s\+$/
+    endif
 endfunction
 
 " Removes all extaneous whitespace in the file
@@ -153,8 +164,8 @@ function! <SID>RunAutoCommands()
                 " Highlight extraneous whitespace at the end of lines, but not the
                 " current line
                 syn clear ExtraWhitespace | syn match ExtraWhitespace excludenl /\s\+$/
-                autocmd InsertEnter * syn clear ExtraWhitespace | syn match ExtraWhitespace excludenl /\s\+\%#\@!$/
-                autocmd InsertLeave,BufReadPost * syn clear ExtraWhitespace | syn match ExtraWhitespace excludenl /\s\+$/
+                autocmd InsertEnter * syn clear ExtraWhitespace | syn match ExtraWhitespace excludenl /\s\+\%#\@!$/ containedin=ALL
+                autocmd InsertLeave,BufReadPost * syn clear ExtraWhitespace | syn match ExtraWhitespace excludenl /\s\+$/ containedin=ALL
             endif
         endif
 
