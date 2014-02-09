@@ -1,5 +1,12 @@
-if exists('loaded_better_whitespace_plugin') | finish | endif
-let loaded_better_whitespace_plugin = 1
+" Author: Nate Peterson
+" Repository: https://github.com/ntpeters/vim-better-whitespace
+
+" Prevent loading the plugin multiple times
+if exists( "g:loaded_better_whitespace_plugin" )
+    finish
+else
+    let g:loaded_better_whitespace_plugin = 1;
+endif
 
 " Set this to enable/disable whitespace highlighting
 let g:better_whitespace_enabled = 1
