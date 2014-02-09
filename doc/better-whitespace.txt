@@ -1,19 +1,15 @@
 *better-whitespace.txt*      better-whitespace
 
 
-This plugin causes all trailing whitespace to be highlighted in red.
-Whitespace will not be highlighted for the current line while in insert mode.
+This plugin causes all trailing whitespace characters (spaces and tabs) to be
+highlighted. Whitespace for the current line will not be highlighted while in 
+insert mode. It is possible to disable current line highlighting while in other
+modes as well (see options below).
 
 
-                                                *StripWhitespace*
+                                                *ToggleWhitespace*
 
-To remove extra whitespace, just call :StripWhitespace.  By default it
-operates on the entire file.  Pass a range (or use V to select some lines)
-to restrict the portion of the file that gets fixed.
-
-                                                *ToggleStripWhitespaceOnSave*
-
-This enables/disables stripping of extra whitespace on file save.
+Call :ToggleWhitespace to toggle whitespace highlighting on/off.
 
                                                 *EnableWhitespace*
 
@@ -25,9 +21,16 @@ highlighting of extraneous whitespace for the entire file.
 To disable whitespace highlighting, call :DisableWhitespace. This will disable
 highlighting of extraneous whitespace for the entire file.
 
-                                                *ToggleWhitespace*
+                                                *StripWhitespace*
 
-Call :ToggleWhitespace to toggle whitespace highlighting on/off.
+To remove extra whitespace, just call :StripWhitespace.By default this
+operates on the entire file. To restrict the portion of the file that it 
+cleans, either give it a range or select a group of lines in visual mode 
+and then execute it.
+
+                                                *ToggleStripWhitespaceOnSave*
+
+This enables/disables stripping of extra whitespace on file save.
 
                                                 *CurrentLineWhitespaceOff*
 
