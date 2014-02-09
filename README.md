@@ -56,10 +56,12 @@ To re-enable highlighting for the current line in normal mode:
 ```
 
 To clean extra whitespace, call:
-`:StripWhitespace`
-By default it operates on the entire file.
-Pass a range (or use V to select some lines) to restrict the portion of the
-file that gets stripped.
+```
+:StripWhitespace
+```
+By default this operates on the entire file. To restrict the portion of
+the file that it cleans, either give it a range or select a group of lines
+in visual mode and then execute it.
 
 To enable/disable stripping of extra whitespace on file save, call:
 ```
@@ -69,7 +71,7 @@ This will strip all trailing whitespace everytime you save the file for all file
 types.  If you would prefer to only stip whitespace for certain filetypes, add
 the following to your `~/.vimrc`:
 ```
-autocmd FileType <desired_filetypes> autocmd BufWritePre <buffer> FixWhitespace
+autocmd FileType <desired_filetypes> autocmd BufWritePre <buffer> StripWhitespace
 ```
 where `<desired_filetypes>` is a comma separated list of the file types you want
 to be stripped of whitespace on file save ( ie. `javascript,c,cpp,java,html,ruby` )
