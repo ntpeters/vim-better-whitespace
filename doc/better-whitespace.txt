@@ -55,6 +55,8 @@ line. Highlighting is still disabled for the current line while in inserte mode
 
 Repository exists at: http://github.com/ntpeters/vim-better-whitespace
 
+Originally inspired by: https://github.com/bronson/vim-trailing-whitespace
+
 Based on:
 http://sartak.org/2011/03/end-of-line-whitespace-in-vim.html
 http://vim.wikia.com/wiki/Highlight_unwanted_spaces
