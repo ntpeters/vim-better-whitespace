@@ -80,6 +80,8 @@ Note that `<buffer>` is a keyword here and should stay just as it appears in the
 
 Repository exists at: http://github.com/ntpeters/vim-better-whitespace
 
+Originally inspired by: https://github.com/bronson/vim-trailing-whitespace
+
 Based on:
 
 http://sartak.org/2011/03/end-of-line-whitespace-in-vim.html
