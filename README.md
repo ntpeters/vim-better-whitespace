@@ -4,7 +4,10 @@ This plugin causes all trailing whitespace characters (spaces and tabs) to be
 highlighted. Whitespace for the current line will not be highlighted
 while in insert mode. It is possible to disable current line highlighting while in other
 modes as well (see options below). A helper function `:StripWhitespace` is also provided
-to make whitespace cleaning painless. 
+to make whitespace cleaning painless.
+
+Here is a screenshot of this plugin at work:
+![Example Screenshot](http://i.imgur.com/kTI1Xsq.png)
 
 ##Installation
 There are a few ways you can go about installing this plugin:
@@ -77,6 +80,15 @@ autocmd FileType <desired_filetypes> autocmd BufWritePre <buffer> StripWhitespac
 where `<desired_filetypes>` is a comma separated list of the file types you want
 to be stripped of whitespace on file save ( ie. `javascript,c,cpp,java,html,ruby` )
 Note that `<buffer>` is a keyword here and should stay just as it appears in the line above.
+
+##Screenshots
+Here are a couple more screenshots of the plugin at work.
+
+This screenshot shows how the current line is not highlighted in insert mode:
+![Insert Screenthot](http://i.imgur.com/yrQ67M7.png)
+
+This screenshot shows the current line not being highlighted in normal mode( `CurrentLineWhitespaceOff hard` ):
+![Normal Screenshot](http://i.imgur.com/PVXjEgw.png)
 
 ##Promotion
 If you like this plugin, please star it on Github and vote it up at Vim.org!
