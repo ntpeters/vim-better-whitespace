@@ -103,7 +103,7 @@ function! s:CurrentLineWhitespaceOn()
     endif
 endfunction
 
-" Removes all extaneous whitespace in the file
+" Removes all extraneous whitespace in the file
 function! s:StripWhitespace( line1, line2 )
     " Save the current search and cursor position
     let _s=@/
@@ -128,7 +128,7 @@ function! s:ToggleStripWhitespaceOnSave()
     call <SID>RunAutoCommands()
 endfunction
 
-" Run :StripWhitespace to remove end of line white space
+" Run :StripWhitespace to remove end of line whitespace
 command! -range=% StripWhitespace call <SID>StripWhitespace( <line1>, <line2> )
 " Run :ToggleStripWhitespaceOnSave to enable/disable whitespace stripping on save
 command! ToggleStripWhitespaceOnSave call <SID>ToggleStripWhitespaceOnSave()
@@ -167,7 +167,7 @@ function! <SID>RunAutoCommands()
                     " Never highlight whitespace on current line
                     autocmd InsertEnter,CursorMoved,CursorMovedI * exe 'match ExtraWhitespace ' . '/\%<' . line(".") .  'l\s\+$\|\%>' . line(".") .  'l\s\+$/'
                 else
-                    " When in insert mode, do not highlight whitespae on the current line
+                    " When in insert mode, do not highlight whitespace on the current line
                     autocmd InsertEnter,CursorMovedI * exe 'match ExtraWhitespace ' . '/\%<' . line(".") .  'l\s\+$\|\%>' . line(".") .  'l\s\+$/'
                 endif
                 " Highlight all whitespace when exiting insert mode
@@ -190,3 +190,6 @@ function! <SID>RunAutoCommands()
 
     augroup END
 endfunction
+
+" Initial call to setup autocommands
+call <SID>RunAutoCommands()
