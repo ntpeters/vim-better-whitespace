@@ -7,7 +7,7 @@ modes as well (see options below). A helper function `:StripWhitespace` is also 
 to make whitespace cleaning painless.
 
 Here is a screenshot of this plugin at work:
-![Example Screenshot](http://i.imgur.com/kTI1Xsq.png)
+![Example Screenshot](http://i.imgur.com/St7yHth.png)
 
 ##Installation
 There are a few ways you can go about installing this plugin:
@@ -85,10 +85,13 @@ Note that `<buffer>` is a keyword here and should stay just as it appears in the
 Here are a couple more screenshots of the plugin at work.
 
 This screenshot shows how the current line is not highlighted in insert mode:
-![Insert Screenthot](http://i.imgur.com/yrQ67M7.png)
+![Insert Screenthot](http://i.imgur.com/RNHR9KX.png)
 
 This screenshot shows the current line not being highlighted in normal mode( `CurrentLineWhitespaceOff hard` ):
-![Normal Screenshot](http://i.imgur.com/PVXjEgw.png)
+![Normal Screenshot](http://i.imgur.com/o888Z7b.png)
+
+This screenshot shows how highlighting works fine for spaces, tabs, and a mixture of both:
+![Tabs Screenshot](http://i.imgur.com/bbsVRUf.png)
 
 ##Promotion
 If you like this plugin, please star it on Github and vote it up at Vim.org!
