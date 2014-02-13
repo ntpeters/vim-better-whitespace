@@ -1,4 +1,4 @@
-#Vim Whitespace Plugin
+#Vim Better Whitespace Plugin
 
 This plugin causes all trailing whitespace characters (spaces and tabs) to be
 highlighted. Whitespace for the current line will not be highlighted
