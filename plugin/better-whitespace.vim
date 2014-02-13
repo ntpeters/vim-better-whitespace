@@ -32,7 +32,7 @@ let s:better_whitespace_initialized = 0
 function! s:WhitespaceInit()
     " Check if the user has already defined highlighting for this group
     if hlexists("ExtraWhitespace") == 0
-        highlight ExtraWhitespace ctermbg = red
+        highlight ExtraWhitespace ctermbg = red guibg = #FF0000
     endif
     let g:better_whitespace_initialized = 1
 endfunction
