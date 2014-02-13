@@ -8,22 +8,30 @@ else
     let g:loaded_better_whitespace_plugin = 1
 endif
 
+" Initializes a given variable to a given value. The variable is only
+" initialized if it does not exist prior.
+function! s:InitVariable(var, value)
+  if !exists(a:var)
+    execute 'let ' . a:var . ' = ' . a:value
+  endif
+endfunction
+
 " Set this to enable/disable whitespace highlighting
-let g:better_whitespace_enabled = 1
+call s:InitVariable('g:better_whitespace_enabled', 1)
 
 " Set this to disable highlighting on the current line in all modes
 " WARNING: This checks for current line on cursor move, which can significantly
 "          impact the performance of Vim (especially on large files)
-let g:current_line_whitespace_disabled_hard = 0
+call s:InitVariable('g:current_line_whitespace_disabled_hard', 0)
 
 " Set this to disable highlighting of the current line in all modes
 " This setting will not have the performance impact of the above, but
 " highlighting throughout the file may be overridden by other highlight
 " patterns with higher priority.
-let g:current_line_whitespace_disabled_soft = 0
+call s:InitVariable('g:current_line_whitespace_disabled_soft', 0)
 
 " Set this to enable stripping whitespace on file save
-let g:strip_whitespace_on_save = 0
+call s:InitVariable('g:strip_whitespace_on_save', 0)
 
 " Only init once
 let s:better_whitespace_initialized = 0
