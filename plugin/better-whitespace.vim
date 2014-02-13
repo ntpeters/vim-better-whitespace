@@ -44,7 +44,7 @@ function! s:EnableWhitespace()
         call <SID>WhitespaceInit()
         " Match default whitespace
         match ExtraWhitespace /\s\+$/
-        call <SID>RunAutoCommands()
+        call <SID>SetupAutoCommands()
     endif
 endfunction
 
@@ -55,7 +55,7 @@ function! s:DisableWhitespace()
         " Clear current whitespace matches
         match ExtraWhitespace ''
         syn clear ExtraWhitespace
-        call <SID>RunAutoCommands()
+        call <SID>SetupAutoCommands()
     endif
 endfunction
 
@@ -88,7 +88,7 @@ function! s:CurrentLineWhitespaceOff( level )
             match ExtraWhitespace ''
         endif
         " Re-run auto commands with the new settings
-        call <SID>RunAutoCommands()
+        call <SID>SetupAutoCommands()
     endif
 endfunction
 
@@ -97,7 +97,7 @@ function! s:CurrentLineWhitespaceOn()
     if g:better_whitespace_enabled == 1
         let g:current_line_whitespace_disabled_hard = 0
         let g:current_line_whitespace_disabled_soft = 0
-        call <SID>RunAutoCommands()
+        call <SID>SetupAutoCommands()
         syn clear ExtraWhitespace
         match ExtraWhitespace /\s\+$/
     endif
@@ -125,7 +125,7 @@ function! s:ToggleStripWhitespaceOnSave()
     else
         let g:strip_whitespace_on_save = 0
     endif
-    call <SID>RunAutoCommands()
+    call <SID>SetupAutoCommands()
 endfunction
 
 " Run :StripWhitespace to remove end of line whitespace
@@ -145,10 +145,10 @@ command! -nargs=* CurrentLineWhitespaceOff call <SID>CurrentLineWhitespaceOff( <
 command! CurrentLineWhitespaceOn call <SID>CurrentLineWhitespaceOn()
 
 " Process auto commands upon load
-autocmd VimEnter,WinEnter,BufEnter,FileType * call <SID>RunAutoCommands()
+autocmd VimEnter,WinEnter,BufEnter,FileType * call <SID>SetupAutoCommands()
 
 " Executes all auto commands
-function! <SID>RunAutoCommands()
+function! <SID>SetupAutoCommands()
     " Auto commands group
     augroup better_whitespace
         autocmd!
@@ -192,4 +192,4 @@ function! <SID>RunAutoCommands()
 endfunction
 
 " Initial call to setup autocommands
-call <SID>RunAutoCommands()
+call <SID>SetupAutoCommands()
