@@ -2,11 +2,10 @@
 " Repository: https://github.com/ntpeters/vim-better-whitespace
 
 " Prevent loading the plugin multiple times
-if exists( "g:loaded_better_whitespace_plugin" )
+if exists( 'g:loaded_better_whitespace_plugin' )
     finish
-else
-    let g:loaded_better_whitespace_plugin = 1
 endif
+let g:loaded_better_whitespace_plugin = 1
 
 " Set this to enable/disable whitespace highlighting
 let g:better_whitespace_enabled = 1
