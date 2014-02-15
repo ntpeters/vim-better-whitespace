@@ -29,57 +29,57 @@ There are a few ways you can go about installing this plugin:
 ##Usage
 Whitespace highlighting is enabled by default, with a highlight color of red.
 
-To set a custom highlight color, just call:
-```
-highlight ExtraWhitespace ctermbg=<desired_color>
-```
+*  To set a custom highlight color, just call:
+    ```
+    highlight ExtraWhitespace ctermbg=<desired_color>
+    ```
 
-To toggle whitespace highlighting on/off, call:
-```
-:ToggleWhitespace
-```
+*  To toggle whitespace highlighting on/off, call:
+    ```
+    :ToggleWhitespace
+    ```
 
-To disable highlighting for the current line in normal mode call:
-```
-:CurrentLineWhitespaceOff <level>
-```
-Where `<level>` is either `hard` or `soft`.
+*  To disable highlighting for the current line in normal mode call:
+    ```
+    :CurrentLineWhitespaceOff <level>
+    ```
+    Where `<level>` is either `hard` or `soft`.
 
-The level `hard` will maintain whitespace highlighting as it is, but may
-cause a slow down in Vim since it uses the CursorMoved event to detect and
-exclude the current line.
+    *  The level `hard` will maintain whitespace highlighting as it is, but may
+        cause a slow down in Vim since it uses the CursorMoved event to detect and
+        exclude the current line.
 
-The level `soft` will use syntax based highlighting, so there shouldn't be
-a performance hit like with the `hard` option.  The drawback is that this
-highlighting will have a lower priority and may be overwritten by higher
-priority highlighting.
+    *  The level `soft` will use syntax based highlighting, so there shouldn't be
+        a performance hit like with the `hard` option.  The drawback is that this
+        highlighting will have a lower priority and may be overwritten by higher
+        priority highlighting.
 
-To re-enable highlighting for the current line in normal mode:
-```
-:CurrentLineWhitespaceOn
-```
+*  To re-enable highlighting for the current line in normal mode:
+    ```
+    :CurrentLineWhitespaceOn
+    ```
 
-To clean extra whitespace, call:
-```
-:StripWhitespace
-```
-By default this operates on the entire file. To restrict the portion of
-the file that it cleans, either give it a range or select a group of lines
-in visual mode and then execute it.
+*  To clean extra whitespace, call:
+    ```
+    :StripWhitespace
+    ```
+    By default this operates on the entire file. To restrict the portion of
+    the file that it cleans, either give it a range or select a group of lines
+    in visual mode and then execute it.
 
-To enable/disable stripping of extra whitespace on file save, call:
-```
-:ToggleStripWhitespaceOnSave
-```
-This will strip all trailing whitespace everytime you save the file for all file
-types.  If you would prefer to only stip whitespace for certain filetypes, add
-the following to your `~/.vimrc`:
-```
-autocmd FileType <desired_filetypes> autocmd BufWritePre <buffer> StripWhitespace
-```
-where `<desired_filetypes>` is a comma separated list of the file types you want
-to be stripped of whitespace on file save ( ie. `javascript,c,cpp,java,html,ruby` )
-Note that `<buffer>` is a keyword here and should stay just as it appears in the line above.
+*  To enable/disable stripping of extra whitespace on file save, call:
+    ```
+    :ToggleStripWhitespaceOnSave
+    ```
+    This will strip all trailing whitespace everytime you save the file for all file types.
+    *  If you would prefer to only stip whitespace for certain filetypes, add
+        the following to your `~/.vimrc`:
+        ```
+        autocmd FileType <desired_filetypes> autocmd BufWritePre <buffer> StripWhitespace
+        ```
+        where `<desired_filetypes>` is a comma separated list of the file types you want
+        to be stripped of whitespace on file save ( ie. `javascript,c,cpp,java,html,ruby` )
+        Note that `<buffer>` is a keyword here and should stay just as it appears in the line above.
 
 ##Screenshots
 Here are a couple more screenshots of the plugin at work.
