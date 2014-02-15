@@ -81,7 +81,8 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
         
         where `<desired_filetypes>` is a comma separated list of the file types you want
         to be stripped of whitespace on file save ( ie. `javascript,c,cpp,java,html,ruby` )
-        Note that `<buffer>` is a keyword here and should stay just as it appears in the line above.
+        Note that `<buffer>` is a keyword here denoting operation on the current buffer and
+        should stay just as it appears in the line above.
 
 ##Screenshots
 Here are a couple more screenshots of the plugin at work.
