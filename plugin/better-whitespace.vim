@@ -41,7 +41,7 @@ function! s:WhitespaceInit()
     if hlexists("ExtraWhitespace") == 0
         highlight ExtraWhitespace ctermbg = red guibg = #FF0000
     endif
-    let g:better_whitespace_initialized = 1
+    let s:better_whitespace_initialized = 1
 endfunction
 
 " Enable the whitespace highlighting
