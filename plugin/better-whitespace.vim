@@ -2,11 +2,10 @@
 " Repository: https://github.com/ntpeters/vim-better-whitespace
 
 " Prevent loading the plugin multiple times
-if exists( "g:loaded_better_whitespace_plugin" )
+if exists( 'g:loaded_better_whitespace_plugin' )
     finish
-else
-    let g:loaded_better_whitespace_plugin = 1
 endif
+let g:loaded_better_whitespace_plugin = 1
 
 " Initializes a given variable to a given value. The variable is only
 " initialized if it does not exist prior.
