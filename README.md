@@ -97,27 +97,27 @@ This screenshot shows how highlighting works fine for spaces, tabs, and a mixtur
 Hopefully some of the most common questions will be answered here.  If you still have a question
 that I have failed to address, please open an issue and ask it!
 
-Q:  Why is trailing whitespace such a big deal?
+**Q:  Why is trailing whitespace such a big deal?**
 
 A:  In most cases it is not a syntactical issue, but rather is a common annoyance among
     programmers.
 
 
-Q:  Why not just use `listchars` with `SpecialKey` highlighting?
+**Q:  Why not just use `listchars` with `SpecialKey` highlighting?**
 
 A:  I tried using `listchars` to show trail characters with `SpecialKey` highlighting applied.
     Using this method the characters would still show on the current line for me even when the
     `SpecialKey` foreground highlight matched the `CursorLine` background highlight.
 
     
-Q:  Okay, so `listchars` doesn't do exactly what you want, why not just use a `match` in your `vimrc`?
+**Q:  Okay, so `listchars` doesn't do exactly what you want, why not just use a `match` in your `vimrc`?**
 
 A:  I am using `match` in this plugin, but I've also added a way to exclude the current line in 
     insert mode and/or normal mode.
 
     
-Q:  If you just want to exclude the current line, why not just use syntax-based highlight rather
-    than using `match` and `CursorMoved` events?
+**Q:  If you just want to exclude the current line, why not just use syntax-based highlight rather
+    than using `match` and `CursorMoved` events?**
 
 A:  Syntax-based highlighting is an option in this plugin.  It is used to omit the current line when
     using `CurrentLineWhitespaceOff soft`. The only issue with this method is that `match` highlighing
@@ -126,13 +126,13 @@ A:  Syntax-based highlighting is an option in this plugin.  It is used to omit t
     extra whitespace will not highlight additional white space on emtpy lines.
     
 
-Q:  I already have my own method of removing white space, why is the method used in this plugin better?
+**Q:  I already have my own method of removing white space, why is the method used in this plugin better?**
 
 A:  It may not be, depending on the method you are using. The method used in this plugin strips extra
     white space and then restores the cursor position and last search history.
 
     
-Q:  Most of this is pretty easy to just add to users' `vimrc` files. Why make it a plugin?
+**Q:  Most of this is pretty easy to just add to users' `vimrc` files. Why make it a plugin?**
 
 A:  It is true that a large part of this is fairly simple to make a part of an individuals
     configuration in their `vimrc`.  I wanted to provide something that is easy to setup and use 
@@ -140,7 +140,7 @@ A:  It is true that a large part of this is fairly simple to make a part of an i
     functionality in their `vimrc`.
 
     
-Q:  I have a better way to do something in this plugin. OR You're doing something stupid/wrong/bad.
+**Q:  I have a better way to do something in this plugin. OR You're doing something stupid/wrong/bad.**
 
 A:  If you know of a better way to do something I am attempting in this plugin, or if I am doing
     something improperly/not reccomended then let me know! Please either open an issue informing
