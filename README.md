@@ -74,9 +74,11 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     This will strip all trailing whitespace everytime you save the file for all file types.
     *  If you would prefer to only stip whitespace for certain filetypes, add
         the following to your `~/.vimrc`:
+        
         ```
         autocmd FileType <desired_filetypes> autocmd BufWritePre <buffer> StripWhitespace
         ```
+        
         where `<desired_filetypes>` is a comma separated list of the file types you want
         to be stripped of whitespace on file save ( ie. `javascript,c,cpp,java,html,ruby` )
         Note that `<buffer>` is a keyword here and should stay just as it appears in the line above.
