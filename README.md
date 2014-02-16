@@ -146,8 +146,8 @@ A:  It is true that a large part of this is fairly simple to make a part of an i
     types of white space?**
     
 A:  No, and no.  Sorry, but both are outside the scope of this plugin.  The purpose of this plugin
-    is to provide a better experience for showing a dealing with extra white space.  There is
-    already an amazing plugin for showing indentationf in Vim called [Indent Guides](https://github.com/nathanaelkane/vim-indent-guides)
+    is to provide a better experience for showing and dealing with extra white space.  There is
+    already an amazing plugin for showing indentation in Vim called [Indent Guides](https://github.com/nathanaelkane/vim-indent-guides).
     For other types of white space highlighting, [listchars](http://vimdoc.sourceforge.net/htmldoc/options.html#'listchars') should be sufficient.
     
 **Q:  I have a better way to do something in this plugin. OR You're doing something stupid/wrong/bad.**
