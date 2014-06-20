@@ -32,6 +32,9 @@ call s:InitVariable('g:current_line_whitespace_disabled_soft', 0)
 " Set this to enable stripping whitespace on file save
 call s:InitVariable('g:strip_whitespace_on_save', 0)
 
+" Set this to blacklist specific filetypes
+call s:InitVariable('g:better_whitespace_filetypes_blacklist', [])
+
 " Only init once
 let s:better_whitespace_initialized = 0
 
@@ -159,6 +162,11 @@ function! <SID>SetupAutoCommands()
     " Auto commands group
     augroup better_whitespace
         autocmd!
+
+        if index(g:better_whitespace_filetypes_blacklist, &ft) >= 0
+            silent! call clearmatches()
+            return
+        endif
 
         if g:better_whitespace_enabled == 1
             if s:better_whitespace_initialized == 0
