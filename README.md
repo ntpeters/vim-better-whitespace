@@ -74,15 +74,21 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     This will strip all trailing whitespace everytime you save the file for all file types.
     *  If you would prefer to only stip whitespace for certain filetypes, add
         the following to your `~/.vimrc`:
-        
+
         ```
         autocmd FileType <desired_filetypes> autocmd BufWritePre <buffer> StripWhitespace
         ```
-        
+
         where `<desired_filetypes>` is a comma separated list of the file types you want
         to be stripped of whitespace on file save ( ie. `javascript,c,cpp,java,html,ruby` )
         Note that `<buffer>` is a keyword here denoting operation on the current buffer and
         should stay just as it appears in the line above.
+
+*  To disable this plugin for specific file types, add the following to your `~/.vimrc`:
+    ```
+    let g:better_whitespace_filetypes_blacklist=['<filetype1>', '<filetype2>',
+    '<etc>']
+    ```
 
 ##Screenshots
 Here are a couple more screenshots of the plugin at work.
@@ -112,13 +118,13 @@ A:  I tried using `listchars` to show trail characters with `SpecialKey` highlig
     Using this method the characters would still show on the current line for me even when the
     `SpecialKey` foreground highlight matched the `CursorLine` background highlight.
 
-    
+
 **Q:  Okay, so `listchars` doesn't do exactly what you want, why not just use a `match` in your `vimrc`?**
 
-A:  I am using `match` in this plugin, but I've also added a way to exclude the current line in 
+A:  I am using `match` in this plugin, but I've also added a way to exclude the current line in
     insert mode and/or normal mode.
 
-    
+
 **Q:  If you just want to exclude the current line, why not just use syntax-based highlight rather
     than using `match` and `CursorMoved` events?**
 
@@ -127,29 +133,29 @@ A:  Syntax-based highlighting is an option in this plugin.  It is used to omit t
     takes higher priorty than syntax highlighting. For example, when using a plugin such as
     [Indent Guides](https://github.com/nathanaelkane/vim-indent-guides), syntax-based highlighting of
     extra whitespace will not highlight additional white space on emtpy lines.
-    
+
 
 **Q:  I already have my own method of removing white space, why is the method used in this plugin better?**
 
 A:  It may not be, depending on the method you are using. The method used in this plugin strips extra
     white space and then restores the cursor position and last search history.
 
-    
+
 **Q:  Most of this is pretty easy to just add to users' `vimrc` files. Why make it a plugin?**
 
 A:  It is true that a large part of this is fairly simple to make a part of an individuals
-    configuration in their `vimrc`.  I wanted to provide something that is easy to setup and use 
+    configuration in their `vimrc`.  I wanted to provide something that is easy to setup and use
     for both those new to Vim and others who don't want to mess around setting up this
     functionality in their `vimrc`.
-    
+
 **Q:  Can you add indentation highlighting for spaces/tabs? Can you add highlighting for other
     types of white space?**
-    
+
 A:  No, and no.  Sorry, but both are outside the scope of this plugin.  The purpose of this plugin
     is to provide a better experience for showing and dealing with extra white space.  There is
     already an amazing plugin for showing indentation in Vim called [Indent Guides](https://github.com/nathanaelkane/vim-indent-guides).
     For other types of white space highlighting, [listchars](http://vimdoc.sourceforge.net/htmldoc/options.html#'listchars') should be sufficient.
-    
+
 **Q:  I have a better way to do something in this plugin. OR You're doing something stupid/wrong/bad.**
 
 A:  If you know of a better way to do something I am attempting in this plugin, or if I am doing
