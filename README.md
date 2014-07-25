@@ -92,13 +92,13 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
 ##Screenshots
 Here are a couple more screenshots of the plugin at work.
 
-This screenshot shows how the current line is not highlighted in insert mode:
+This screenshot shows the current line not being highlighted in insert mode:
 ![Insert Screenthot](http://i.imgur.com/RNHR9KX.png)
 
 This screenshot shows the current line not being highlighted in normal mode( `CurrentLineWhitespaceOff hard` ):
 ![Normal Screenshot](http://i.imgur.com/o888Z7b.png)
 
-This screenshot shows how highlighting works fine for spaces, tabs, and a mixture of both:
+This screenshot shows that highlighting works fine for spaces, tabs, and a mixture of both:
 ![Tabs Screenshot](http://i.imgur.com/bbsVRUf.png)
 
 ##Frequently Asked Questions
