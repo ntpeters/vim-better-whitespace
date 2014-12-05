@@ -171,7 +171,7 @@ function! <SID>SetupAutoCommands()
         autocmd!
 
         if index(g:better_whitespace_filetypes_blacklist, &ft) >= 0
-            silent! call clearmatches()
+            match ExtraWhitespace ''
             return
         endif
 
@@ -195,7 +195,7 @@ function! <SID>SetupAutoCommands()
                 " Highlight all whitespace when exiting insert mode
                 autocmd InsertLeave,BufReadPost * match ExtraWhitespace /\s\+$/
                 " Clear whitespace highlighting when leaving buffer
-                autocmd BufWinLeave * call clearmatches()
+                autocmd BufWinLeave * match ExtraWhitespace ''
             else
                 " Highlight extraneous whitespace at the end of lines, but not the
                 " current line
