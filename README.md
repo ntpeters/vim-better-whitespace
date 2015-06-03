@@ -22,7 +22,7 @@ There are a few ways you can go about installing this plugin:
     ```
 2.  If you are using [Pathogen](https://github.com/tpope/vim-pathogen), you can just run the following command:
     ```
-    git clone git://github.com/ntpeters/vim-better-whitespace.git ~/.vim/bundle/
+    git clone git://github.com/ntpeters/vim-better-whitespace.git ~/.vim/bundle/vim-better-whitespace
     ```
 3.  While this plugin can also be installed by copying its contents into your `~/.vim/` directory, I would highly recommend using one of the above methods as they make managing your Vim plugins painless.
 
