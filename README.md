@@ -72,6 +72,15 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     :ToggleStripWhitespaceOnSave
     ```
     This will strip all trailing whitespace everytime you save the file for all file types.
+    
+    *  If you want this behaviour by default for all filetypes, add the following to your `~/.vimrc`:
+        
+        ```
+        autocmd BufWritePre * StripWhitespace
+        ```
+        
+        For exceptions of all see ```g:better_whitespace_filetypes_blacklist```.
+        
     *  If you would prefer to only stip whitespace for certain filetypes, add
         the following to your `~/.vimrc`:
 
