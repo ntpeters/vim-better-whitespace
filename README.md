@@ -86,6 +86,16 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
 
 *  To disable this plugin for specific file types, add the following to your `~/.vimrc`:
     ```
+    let g:better_whitespace_filetypes_blacklist+=['<filetype1>', '<filetype2>', '<etc>']
+    ```
+    This adds filetypes to the default list of blacklisted filetypes. The
+    default types that are blacklisted are:
+    ```
+    ['diff', 'gitcommit', 'unite', 'qf', 'help']
+    ```
+    If you do not want any of these filetypes ignored, simply reset the
+    blacklist rather than append to it:
+    ```
     let g:better_whitespace_filetypes_blacklist=['<filetype1>', '<filetype2>', '<etc>']
     ```
 

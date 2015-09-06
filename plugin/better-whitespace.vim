@@ -33,7 +33,8 @@ call s:InitVariable('g:current_line_whitespace_disabled_soft', 0)
 call s:InitVariable('g:strip_whitespace_on_save', 0)
 
 " Set this to blacklist specific filetypes
-call s:InitVariable('g:better_whitespace_filetypes_blacklist', [])
+let default_blacklist=['diff', 'gitcommit', 'unite', 'qf', 'help']
+call s:InitVariable('g:better_whitespace_filetypes_blacklist', default_blacklist)
 
 " Only init once
 let s:better_whitespace_initialized = 0
@@ -161,6 +162,11 @@ function! s:ToggleStripWhitespaceOnSave()
     call <SID>SetupAutoCommands()
 endfunction
 
+" Determines if whitespace highlighting should currently be skipped
+function! s:ShouldSkipHighlight()
+    return &buftype == 'nofile' || index(g:better_whitespace_filetypes_blacklist, &ft) >= 0
+endfunction
+
 " Run :StripWhitespace to remove end of line whitespace
 command! -range=% StripWhitespace call <SID>StripWhitespace( <line1>, <line2> )
 " Run :ToggleStripWhitespaceOnSave to enable/disable whitespace stripping on save
@@ -186,7 +192,7 @@ function! <SID>SetupAutoCommands()
     augroup better_whitespace
         autocmd!
 
-        if index(g:better_whitespace_filetypes_blacklist, &ft) >= 0
+        if <SID>ShouldSkipHighlight()
             match ExtraWhitespace ''
             return
         endif
