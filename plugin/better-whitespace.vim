@@ -61,7 +61,7 @@ endfunction
 " Ensure the 'ExtraWhitespace' highlight group has been defined
 function! s:WhitespaceInit()
     " Check if the user has already defined highlighting for this group
-    if hlexists("ExtraWhitespace") == 0
+    if hlexists("ExtraWhitespace") == 0 || synIDattr(synIDtrans(hlID("ExtraWhitespace")), "bg") == -1
         highlight ExtraWhitespace ctermbg = red guibg = #FF0000
     endif
     let s:better_whitespace_initialized = 1
@@ -185,6 +185,7 @@ command! CurrentLineWhitespaceOn call <SID>CurrentLineWhitespaceOn()
 
 " Process auto commands upon load
 autocmd VimEnter,WinEnter,BufEnter,FileType * call <SID>SetupAutoCommands()
+autocmd ColorScheme * call <SID>WhitespaceInit()
 
 " Executes all auto commands
 function! <SID>SetupAutoCommands()
