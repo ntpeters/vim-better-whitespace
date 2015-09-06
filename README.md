@@ -99,6 +99,11 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     let g:better_whitespace_filetypes_blacklist=['<filetype1>', '<filetype2>', '<etc>']
     ```
 
+*  To enable verbose output for each command, set verbosity in your `.vimrc`:
+    ```
+    let g:better_whitespace_verbosity=1
+    ```
+
 ##Screenshots
 Here are a couple more screenshots of the plugin at work.
 
