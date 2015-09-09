@@ -233,8 +233,8 @@ function! <SID>SetupAutoCommands()
                 " Highlight extraneous whitespace at the end of lines, but not the
                 " current line.
                 call s:InAllWindows('syn clear ExtraWhitespace | syn match ExtraWhitespace excludenl /\s\+$/')
-                autocmd InsertEnter * syn clear ExtraWhitespace | syn match ExtraWhitespace excludenl /\s\+\%#\@!$/ containedin=ALL
-                autocmd InsertLeave,BufReadPost * syn clear ExtraWhitespace | syn match ExtraWhitespace excludenl /\s\+$/ containedin=ALL
+                autocmd InsertEnter * syn clear ExtraWhitespace | syn match ExtraWhitespace excludenl /\s\+\%#\@!$/ containedin=ALLBUT,gitcommitDiff
+                autocmd InsertLeave,BufReadPost * syn clear ExtraWhitespace | syn match ExtraWhitespace excludenl /\s\+$/ containedin=ALLBUT,gitcommitDiff
             endif
         endif
 
