@@ -194,7 +194,7 @@ command! -nargs=* CurrentLineWhitespaceOff call <SID>CurrentLineWhitespaceOff( <
 command! CurrentLineWhitespaceOn call <SID>CurrentLineWhitespaceOn()
 
 " Process auto commands upon load
-autocmd BufWinEnter * call <SID>SetupAutoCommands()
+autocmd BufWinEnter,FileType * call <SID>SetupAutoCommands()
 autocmd ColorScheme * call <SID>WhitespaceInit()
 
 " Executes all auto commands
