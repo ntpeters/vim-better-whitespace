@@ -10,9 +10,9 @@ let g:loaded_better_whitespace_plugin = 1
 " Initializes a given variable to a given value. The variable is only
 " initialized if it does not exist prior.
 function! s:InitVariable(var, value)
-  if !exists(a:var)
-    execute 'let ' . a:var . ' = ' . string(a:value)
-  endif
+    if !exists(a:var)
+      execute 'let ' . a:var . ' = ' . string(a:value)
+    endif
 endfunction
 
 " Set this to enable/disable whitespace highlighting
