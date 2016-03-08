@@ -72,15 +72,15 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     :ToggleStripWhitespaceOnSave
     ```
     This will strip all trailing whitespace everytime you save the file for all file types.
-    
+
     *  If you want this behaviour by default for all filetypes, add the following to your `~/.vimrc`:
-        
+
         ```
         autocmd BufWritePre * StripWhitespace
         ```
-        
+
         For exceptions of all see ```g:better_whitespace_filetypes_blacklist```.
-        
+
     *  If you would prefer to only stip whitespace for certain filetypes, add
         the following to your `~/.vimrc`:
 
@@ -95,17 +95,18 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
 
 *  To disable this plugin for specific file types, add the following to your `~/.vimrc`:
     ```
-    let g:better_whitespace_filetypes_blacklist+=['<filetype1>', '<filetype2>', '<etc>']
+    let g:better_whitespace_filetypes_blacklist=['<filetype1>', '<filetype2>', '<etc>']
     ```
-    This adds filetypes to the default list of blacklisted filetypes. The
+    This replaces the filetypes from the default list of blacklisted filetypes. The
     default types that are blacklisted are:
     ```
     ['diff', 'gitcommit', 'unite', 'qf', 'help']
     ```
-    If you do not want any of these filetypes ignored, simply reset the
-    blacklist rather than append to it:
+    If you do not want any of these filetypes unignored, simply include them in the
+    blacklist:
     ```
-    let g:better_whitespace_filetypes_blacklist=['<filetype1>', '<filetype2>', '<etc>']
+    let g:better_whitespace_filetypes_blacklist=['<filetype1>', '<filetype2>', '<etc>',
+                                            'diff', 'gitcommit', 'unite', 'qf', 'help']
     ```
 
 *  To enable verbose output for each command, set verbosity in your `.vimrc`:
