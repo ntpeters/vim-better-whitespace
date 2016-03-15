@@ -191,10 +191,11 @@ command! CurrentLineWhitespaceOn call <SID>CurrentLineWhitespaceOn()
 
 " Process auto commands upon load, update local enabled on filetype change
 autocmd FileType * let b:better_whitespace_enabled = !<SID>ShouldSkipHighlight() | call <SID>SetupAutoCommands()
-autocmd WinEnter,BufWinEnter * call <SID>SetupAutoCommands()
+autocmd BufWinEnter * call <SID>SetupAutoCommands()
 autocmd ColorScheme * call <SID>WhitespaceInit()
 
 function! s:PerformMatchHighlight(pattern)
+    call s:InitVariable('b:better_whitespace_enabled', !<SID>ShouldSkipHighlight())
     if b:better_whitespace_enabled == 1
         exe 'match ExtraWhitespace ' . a:pattern
     else
@@ -204,6 +205,7 @@ endfunction
 
 function! s:PerformSyntaxHighlight(pattern)
     syn clear ExtraWhitespace
+    call s:InitVariable('b:better_whitespace_enabled', !<SID>ShouldSkipHighlight())
     if b:better_whitespace_enabled == 1
         exe 'syn match ExtraWhitespace excludenl ' . a:pattern
     endif
@@ -215,9 +217,6 @@ function! <SID>SetupAutoCommands()
     augroup better_whitespace
         autocmd!
 
-        " make sure the local variable exists
-        call s:InitVariable('b:better_whitespace_enabled', !<SID>ShouldSkipHighlight())
-
         if g:better_whitespace_enabled == 1
             if s:better_whitespace_initialized == 0
                 call <SID>WhitespaceInit()
@@ -227,7 +226,6 @@ function! <SID>SetupAutoCommands()
             if g:current_line_whitespace_disabled_soft == 0
                 " Highlight all whitespace upon entering buffer
                 call <SID>PerformMatchHighlight('/\s\+$/')
-                autocmd BufWinEnter * call <SID>PerformMatchHighlight('/\s\+$/')
                 " Check if current line highglighting is disabled
                 if g:current_line_whitespace_disabled_hard == 1
                     " Never highlight whitespace on current line
