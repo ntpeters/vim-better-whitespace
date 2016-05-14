@@ -10,9 +10,9 @@ let g:loaded_better_whitespace_plugin = 1
 " Initializes a given variable to a given value. The variable is only
 " initialized if it does not exist prior.
 function! s:InitVariable(var, value)
-  if !exists(a:var)
-    execute 'let ' . a:var . ' = ' . string(a:value)
-  endif
+    if !exists(a:var)
+      execute 'let ' . a:var . ' = ' . string(a:value)
+    endif
 endfunction
 
 " Set this to enable/disable whitespace highlighting
@@ -79,11 +79,9 @@ endfunction
 
 " Enable the whitespace highlighting
 function! s:EnableWhitespace()
-    if g:better_whitespace_enabled == 0
-        let g:better_whitespace_enabled = 1
+    if b:better_whitespace_enabled == 0
+        let b:better_whitespace_enabled = 1
         call <SID>WhitespaceInit()
-        " Match default whitespace
-        call s:InAllWindows('match ExtraWhitespace /\s\+$/')
         call <SID>SetupAutoCommands()
         call <SID>Echo("Whitespace Highlighting: Enabled")
     endif
@@ -91,10 +89,8 @@ endfunction
 
 " Disable the whitespace highlighting
 function! s:DisableWhitespace()
-    if g:better_whitespace_enabled == 1
-        let g:better_whitespace_enabled = 0
-        " Clear current whitespace matches
-        call s:InAllWindows("match ExtraWhitespace '' | syn clear ExtraWhitespace")
+    if b:better_whitespace_enabled == 1
+        let b:better_whitespace_enabled = 0
         call <SID>SetupAutoCommands()
         call <SID>Echo("Whitespace Highlighting: Disabled")
     endif
@@ -102,7 +98,7 @@ endfunction
 
 " Toggle whitespace highlighting on/off
 function! s:ToggleWhitespace()
-    if g:better_whitespace_enabled == 1
+    if b:better_whitespace_enabled == 1
         call <SID>DisableWhitespace()
     else
         call <SID>EnableWhitespace()
@@ -193,20 +189,33 @@ command! -nargs=* CurrentLineWhitespaceOff call <SID>CurrentLineWhitespaceOff( <
 " Run :CurrentLineWhitespaceOn to turn on whitespace for the current line
 command! CurrentLineWhitespaceOn call <SID>CurrentLineWhitespaceOn()
 
-" Process auto commands upon load
-autocmd BufWinEnter,FileType * call <SID>SetupAutoCommands()
+" Process auto commands upon load, update local enabled on filetype change
+autocmd FileType * let b:better_whitespace_enabled = !<SID>ShouldSkipHighlight() | call <SID>SetupAutoCommands()
+autocmd BufWinEnter * call <SID>SetupAutoCommands()
 autocmd ColorScheme * call <SID>WhitespaceInit()
+
+function! s:PerformMatchHighlight(pattern)
+    call s:InitVariable('b:better_whitespace_enabled', !<SID>ShouldSkipHighlight())
+    if b:better_whitespace_enabled == 1
+        exe 'match ExtraWhitespace ' . a:pattern
+    else
+        match ExtraWhitespace ''
+    endif
+endfunction
+
+function! s:PerformSyntaxHighlight(pattern)
+    syn clear ExtraWhitespace
+    call s:InitVariable('b:better_whitespace_enabled', !<SID>ShouldSkipHighlight())
+    if b:better_whitespace_enabled == 1
+        exe 'syn match ExtraWhitespace excludenl ' . a:pattern
+    endif
+endfunction
 
 " Executes all auto commands
 function! <SID>SetupAutoCommands()
     " Auto commands group
     augroup better_whitespace
         autocmd!
-
-        if <SID>ShouldSkipHighlight()
-            match ExtraWhitespace ''
-            return
-        endif
 
         if g:better_whitespace_enabled == 1
             if s:better_whitespace_initialized == 0
@@ -216,25 +225,25 @@ function! <SID>SetupAutoCommands()
             " Check if current line is disabled softly
             if g:current_line_whitespace_disabled_soft == 0
                 " Highlight all whitespace upon entering buffer
-                autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+                call <SID>PerformMatchHighlight('/\s\+$/')
                 " Check if current line highglighting is disabled
                 if g:current_line_whitespace_disabled_hard == 1
                     " Never highlight whitespace on current line
-                    autocmd InsertEnter,CursorMoved,CursorMovedI * exe 'match ExtraWhitespace ' . '/\%<' . line(".") .  'l\s\+$\|\%>' . line(".") .  'l\s\+$/'
+                    autocmd InsertEnter,CursorMoved,CursorMovedI * call <SID>PerformMatchHighlight('/\%<' . line(".") .  'l\s\+$\|\%>' . line(".") .  'l\s\+$/')
                 else
                     " When in insert mode, do not highlight whitespace on the current line
-                    autocmd InsertEnter,CursorMovedI * exe 'match ExtraWhitespace ' . '/\%<' . line(".") .  'l\s\+$\|\%>' . line(".") .  'l\s\+$/'
+                    autocmd InsertEnter,CursorMovedI * call <SID>PerformMatchHighlight('/\%<' . line(".") .  'l\s\+$\|\%>' . line(".") .  'l\s\+$/')
                 endif
                 " Highlight all whitespace when exiting insert mode
-                autocmd InsertLeave,BufReadPost * match ExtraWhitespace /\s\+$/
+                autocmd InsertLeave,BufReadPost * call <SID>PerformMatchHighlight('/\s\+$/')
                 " Clear whitespace highlighting when leaving buffer
                 autocmd BufWinLeave * match ExtraWhitespace ''
             else
                 " Highlight extraneous whitespace at the end of lines, but not the
                 " current line.
-                call s:InAllWindows('syn clear ExtraWhitespace | syn match ExtraWhitespace excludenl /\s\+$/')
-                autocmd InsertEnter * syn clear ExtraWhitespace | syn match ExtraWhitespace excludenl /\s\+\%#\@!$/ containedin=ALLBUT,gitcommitDiff
-                autocmd InsertLeave,BufReadPost * syn clear ExtraWhitespace | syn match ExtraWhitespace excludenl /\s\+$/ containedin=ALLBUT,gitcommitDiff
+                call <SID>PerformSyntaxHighlight('/\s\+$/')
+                autocmd InsertEnter * call <SID>PerformSyntaxHighlight('/\s\+\%#\@!$/')
+                autocmd InsertLeave,BufReadPost * call <SID>PerformSyntaxHighlight('/\s\+$/')
             endif
         endif
 
@@ -246,5 +255,3 @@ function! <SID>SetupAutoCommands()
     augroup END
 endfunction
 
-" Initial call to setup autocommands
-call <SID>SetupAutoCommands()
