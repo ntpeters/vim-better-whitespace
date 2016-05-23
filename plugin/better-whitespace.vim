@@ -191,7 +191,7 @@ command! CurrentLineWhitespaceOn call <SID>CurrentLineWhitespaceOn()
 
 " Process auto commands upon load, update local enabled on filetype change
 autocmd FileType * let b:better_whitespace_enabled = !<SID>ShouldSkipHighlight() | call <SID>SetupAutoCommands()
-autocmd BufWinEnter * call <SID>SetupAutoCommands()
+autocmd WinEnter,BufWinEnter * call <SID>SetupAutoCommands()
 autocmd ColorScheme * call <SID>WhitespaceInit()
 
 function! s:PerformMatchHighlight(pattern)
