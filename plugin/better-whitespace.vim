@@ -105,6 +105,29 @@ function! s:ToggleWhitespace()
     endif
 endfunction
 
+" Search for whitespace
+function! s:SearchWhitespace(flags)
+  let pos = search('\s\+$\| \+\ze\t', a:flags)
+  if pos > 0
+    call setpos('.', pos)
+  endif
+  return pos
+endfunction
+
+" Search for next occurrence of whitespace
+function! s:NextWhitespace()
+  if <SID>SearchWhitespace("") == 0
+    call <SID>Echo("Next Whitespace: none found")
+  endif
+endfunction
+
+" Search for previous occurrence of whitespace
+function! s:PrevWhitespace()
+  if <SID>SearchWhitespace("b") == 0
+    call <SID>Echo("Previous Whitespace: none found")
+  endif
+endfunction
+
 " This disabled whitespace highlighting on the current line in all modes
 " Options:
 " hard - Disables highlighting for current line and maintains high priority
@@ -117,7 +140,7 @@ function! s:CurrentLineWhitespaceOff( level )
         if a:level == 'hard'
             let g:current_line_whitespace_disabled_hard = 1
             let g:current_line_whitespace_disabled_soft = 0
-            call s:InAllWindows('syn clear ExtraWhitespace | match ExtraWhitespace /\s\+$/')
+            call s:InAllWindows('syn clear ExtraWhitespace | match ExtraWhitespace /\s\+$\| \+\ze\t/')
             call <SID>Echo("Current Line Hightlight Off (hard)")
         elseif a:level == 'soft'
             let g:current_line_whitespace_disabled_soft = 1
@@ -136,7 +159,7 @@ function! s:CurrentLineWhitespaceOn()
         let g:current_line_whitespace_disabled_hard = 0
         let g:current_line_whitespace_disabled_soft = 0
         call <SID>SetupAutoCommands()
-        call s:InAllWindows('syn clear ExtraWhitespace | match ExtraWhitespace /\s\+$/')
+        call s:InAllWindows('syn clear ExtraWhitespace | match ExtraWhitespace /\s\+$\| \+\ze\t/')
         call <SID>Echo("Current Line Hightlight On")
     endif
 endfunction
@@ -149,7 +172,7 @@ function! s:StripWhitespace( line1, line2 )
     let c = col(".")
 
     " Strip the whitespace
-    silent! execute ':' . a:line1 . ',' . a:line2 . 's/\s\+$//e'
+    silent! execute ':' . a:line1 . ',' . a:line2 . 's/\s\+$\| \+\ze\t//e'
 
     " Restore the saved search and cursor position
     let @/=_s
@@ -183,6 +206,10 @@ command! EnableWhitespace call <SID>EnableWhitespace()
 command! DisableWhitespace call <SID>DisableWhitespace()
 " Run :ToggleWhitespace to toggle whitespace highlighting on/off
 command! ToggleWhitespace call <SID>ToggleWhitespace()
+" Run :NextWhitespace to search for next occurrence of whitespace
+command! NextWhitespace call <SID>NextWhitespace()
+" Run :PrevWhitespace to search for previous occurrence of whitespace
+command! PrevWhitespace call <SID>PrevWhitespace()
 " Run :CurrentLineWhitespaceOff(level) to disable highlighting for the current
 " line. Levels are: 'hard' and 'soft'
 command! -nargs=* CurrentLineWhitespaceOff call <SID>CurrentLineWhitespaceOff( <f-args> )
@@ -225,25 +252,24 @@ function! <SID>SetupAutoCommands()
             " Check if current line is disabled softly
             if g:current_line_whitespace_disabled_soft == 0
                 " Highlight all whitespace upon entering buffer
-                call <SID>PerformMatchHighlight('/\s\+$/')
+                call <SID>PerformMatchHighlight('/\s\+$\| \+\ze\t/')
                 " Check if current line highglighting is disabled
                 if g:current_line_whitespace_disabled_hard == 1
                     " Never highlight whitespace on current line
-                    autocmd InsertEnter,CursorMoved,CursorMovedI * call <SID>PerformMatchHighlight('/\%<' . line(".") .  'l\s\+$\|\%>' . line(".") .  'l\s\+$/')
+                    autocmd InsertEnter,CursorMoved,CursorMovedI * call <SID>PerformMatchHighlight('/\%<' . line(".") .  'l\s\+$\|\%>' . line(".") .  'l\s\+$\|\%<' . line(".") . 'l \+\ze\t\|\%>' . line(".") . 'l \+\ze\t/')
                 else
                     " When in insert mode, do not highlight whitespace on the current line
-                    autocmd InsertEnter,CursorMovedI * call <SID>PerformMatchHighlight('/\%<' . line(".") .  'l\s\+$\|\%>' . line(".") .  'l\s\+$/')
+                    autocmd InsertEnter,CursorMovedI * call <SID>PerformMatchHighlight('/\%<' . line(".") .  'l\s\+$\|\%>' . line(".") .  'l\s\+$\|\%<' . line(".") . 'l \+\ze\t\|\%>' . line(".") . 'l \+\ze\t/')
                 endif
                 " Highlight all whitespace when exiting insert mode
-                autocmd InsertLeave,BufReadPost * call <SID>PerformMatchHighlight('/\s\+$/')
+                autocmd InsertLeave,BufReadPost * call <SID>PerformMatchHighlight('/\s\+$\| \+\ze\t/')
                 " Clear whitespace highlighting when leaving buffer
                 autocmd BufWinLeave * match ExtraWhitespace ''
             else
-                " Highlight extraneous whitespace at the end of lines, but not the
-                " current line.
-                call <SID>PerformSyntaxHighlight('/\s\+$/')
-                autocmd InsertEnter * call <SID>PerformSyntaxHighlight('/\s\+\%#\@!$/')
-                autocmd InsertLeave,BufReadPost * call <SID>PerformSyntaxHighlight('/\s\+$/')
+                " Highlight extraneous whitespace, but not the current line.
+                call <SID>PerformSyntaxHighlight('/\s\+$\| \+\ze\t/')
+                autocmd InsertEnter * call <SID>PerformSyntaxHighlight('/\s\+\%#\@!$\| \+\ze\t/')
+                autocmd InsertLeave,BufReadPost * call <SID>PerformSyntaxHighlight('/\s\+$\| \+\ze\t/')
             endif
         endif
 
