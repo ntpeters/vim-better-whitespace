@@ -24,6 +24,14 @@ highlighting of extraneous whitespace for the entire file.
 To disable whitespace highlighting, call :DisableWhitespace. This will disable
 highlighting of extraneous whitespace for the entire file.
 
+                                                *NextWhitespace*
+
+To search for the next occurrence of whitespace, call :NextWhitespace.
+
+						*PrevWhitespace*
+
+To search for the previous occurrence of whitespace, call :PrevWhitespace.
+
                                                 *StripWhitespace*
 
 To remove extra whitespace, just call :StripWhitespace.By default this

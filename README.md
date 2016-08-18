@@ -39,6 +39,14 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     :ToggleWhitespace
     ```
 
+*  To search for trailing whitespace, the `:NextWhitespace` and `:PrevWhitespace`
+   commands may be called. These commands are most useful when bound to a key
+   sequence:
+    ```
+    noremap <silent> [w :PrevWhitespace<CR>
+    noremap <silent> ]w :NextWhitespace<CR>
+    ```
+
 *  To disable highlighting for the current line in normal mode call:
     ```
     :CurrentLineWhitespaceOff <level>

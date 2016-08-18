@@ -105,6 +105,29 @@ function! s:ToggleWhitespace()
     endif
 endfunction
 
+" Search for whitespace
+function! s:SearchWhitespace(flags)
+  let pos = search('\s\+$\| \+\ze\t', a:flags)
+  if pos > 0
+    call setpos('.', pos)
+  endif
+  return pos
+endfunction
+
+" Search for next occurrence of whitespace
+function! s:NextWhitespace()
+  if <SID>SearchWhitespace("") == 0
+    call <SID>Echo("Next Whitespace: none found")
+  endif
+endfunction
+
+" Search for previous occurrence of whitespace
+function! s:PrevWhitespace()
+  if <SID>SearchWhitespace("b") == 0
+    call <SID>Echo("Previous Whitespace: none found")
+  endif
+endfunction
+
 " This disabled whitespace highlighting on the current line in all modes
 " Options:
 " hard - Disables highlighting for current line and maintains high priority
@@ -183,6 +206,10 @@ command! EnableWhitespace call <SID>EnableWhitespace()
 command! DisableWhitespace call <SID>DisableWhitespace()
 " Run :ToggleWhitespace to toggle whitespace highlighting on/off
 command! ToggleWhitespace call <SID>ToggleWhitespace()
+" Run :NextWhitespace to search for next occurrence of whitespace
+command! NextWhitespace call <SID>NextWhitespace()
+" Run :PrevWhitespace to search for previous occurrence of whitespace
+command! PrevWhitespace call <SID>PrevWhitespace()
 " Run :CurrentLineWhitespaceOff(level) to disable highlighting for the current
 " line. Levels are: 'hard' and 'soft'
 command! -nargs=* CurrentLineWhitespaceOff call <SID>CurrentLineWhitespaceOff( <f-args> )
