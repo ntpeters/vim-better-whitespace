@@ -76,7 +76,7 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     *  If you want this behaviour by default for all filetypes, add the following to your `~/.vimrc`:
 
         ```
-        autocmd BufWritePre * StripWhitespace
+        autocmd BufEnter * EnableStripWhitespaceOnSave
         ```
 
         For exceptions of all see ```g:better_whitespace_filetypes_blacklist```.
@@ -85,7 +85,7 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
         the following to your `~/.vimrc`:
 
         ```
-        autocmd FileType <desired_filetypes> autocmd BufWritePre <buffer> StripWhitespace
+        autocmd FileType <desired_filetypes> autocmd BufEnter <buffer> EnableStripWhitespaceOnSave
         ```
 
         where `<desired_filetypes>` is a comma separated list of the file types you want
