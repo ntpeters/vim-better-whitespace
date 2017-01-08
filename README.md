@@ -81,7 +81,7 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
 
         For exceptions of all see ```g:better_whitespace_filetypes_blacklist```.
 
-    *  If you would prefer to only stip whitespace for certain filetypes, add
+    *  If you would prefer to only strip whitespace for certain filetypes, add
         the following to your `~/.vimrc`:
 
         ```
