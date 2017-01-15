@@ -33,7 +33,7 @@ call s:InitVariable('g:current_line_whitespace_disabled_soft', 0)
 call s:InitVariable('g:strip_whitespace_on_save', 0)
 
 " Set this to blacklist specific filetypes
-let default_blacklist=['diff', 'gitcommit', 'unite', 'qf', 'help']
+let default_blacklist=['diff', 'gitcommit', 'unite', 'qf', 'help', 'markdown']
 call s:InitVariable('g:better_whitespace_filetypes_blacklist', default_blacklist)
 
 " Disable verbosity by default
