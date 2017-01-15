@@ -11,7 +11,7 @@ let g:loaded_better_whitespace_plugin = 1
 " initialized if it does not exist prior.
 function! s:InitVariable(var, value)
     if !exists(a:var)
-      execute 'let ' . a:var . ' = ' . string(a:value)
+        execute 'let ' . a:var . ' = ' . string(a:value)
     endif
 endfunction
 
