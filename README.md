@@ -121,6 +121,7 @@ horizontal whitepsace characters to match for both highlighting and stripping.
 
 This is list should match against all ASCII and Unicode horizontal whitespace
 characters:
+```
     U+0009   TAB
     U+0020   SPACE
     U+00A0   NO-BREAK SPACE
@@ -142,6 +143,7 @@ characters:
     U+205F   MEDIUM MATHEMATICAL SPACE
     U+3000   IDEOGRAPHIC SPACE
     U+FEFF   ZERO WIDTH NO-BREAK SPACE
+```
 
 A file is provided with samples of each of these characters to check the plugin
 working with them: whitespace_examples.txt
