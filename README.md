@@ -100,7 +100,7 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     This replaces the filetypes from the default list of blacklisted filetypes. The
     default types that are blacklisted are:
     ```
-    ['diff', 'gitcommit', 'unite', 'qf', 'help']
+    ['diff', 'gitcommit', 'unite', 'qf', 'help', 'markdown']
     ```
     If you do not want any of these filetypes unignored, simply include them in the
     blacklist:
@@ -113,6 +113,41 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     ```
     let g:better_whitespace_verbosity=1
     ```
+
+##Supported Whitespace Characters
+Due to the fact that the built-in whitespace character class for patterns (`\s`)
+only matches against tabs and spaces, this plugin defines its own list of
+horizontal whitepsace characters to match for both highlighting and stripping.
+
+This is list should match against all ASCII and Unicode horizontal whitespace
+characters:
+    U+0009   TAB
+    U+0020   SPACE
+    U+00A0   NO-BREAK SPACE
+    U+1680   OGHAM SPACE MARK
+    U+180E   MONGOLIAN VOWEL SEPARATOR
+    U+2000   EN QUAD
+    U+2001   EM QUAD
+    U+2002   EN SPACE
+    U+2003   EM SPACE
+    U+2004   THREE-PER-EM SPACE
+    U+2005   FOUR-PER-EM SPACE
+    U+2006   SIX-PER-EM SPACE
+    U+2007   FIGURE SPACE
+    U+2008   PUNCTUATION SPACE
+    U+2009   THIN SPACE
+    U+200A   HAIR SPACE
+    U+200B   ZERO WIDTH SPACE
+    U+202F   NARROW NO-BREAK SPACE
+    U+205F   MEDIUM MATHEMATICAL SPACE
+    U+3000   IDEOGRAPHIC SPACE
+    U+FEFF   ZERO WIDTH NO-BREAK SPACE
+
+A file is provided with samples of each of these characters to check the plugin
+working with them: whitespace_examples.txt
+
+If you encounter any additional whitespace characters I have missed here,
+please submit a pull request.
 
 ##Screenshots
 Here are a couple more screenshots of the plugin at work.
