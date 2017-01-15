@@ -156,16 +156,27 @@ function! s:StripWhitespace( line1, line2 )
     call cursor(l, c)
 endfunction
 
+" Strip whitespace on file save
+function! s:EnableStripWhitespaceOnSave()
+    let g:strip_whitespace_on_save = 1
+    call <SID>Echo("Strip Whitespace On Save: Enabled")
+    call <SID>SetupAutoCommands()
+endfunction
+
+" Don't strip whitespace on file save
+function! s:DisableStripWhitespaceOnSave()
+    let g:strip_whitespace_on_save = 0
+    call <SID>Echo("Strip Whitespace On Save: Disabled")
+    call <SID>SetupAutoCommands()
+endfunction
+
 " Strips whitespace on file save
 function! s:ToggleStripWhitespaceOnSave()
-    if g:strip_whitespace_on_save == 0
-        let g:strip_whitespace_on_save = 1
-        call <SID>Echo("Strip Whitespace On Save: Enabled")
+    if g:strip_whitespace_on_save == 1
+        call <SID>DisableStripWhitespaceOnSave()
     else
-        let g:strip_whitespace_on_save = 0
-        call <SID>Echo("Strip Whitespace On Save: Disabled")
+        call <SID>EnableStripWhitespaceOnSave()
     endif
-    call <SID>SetupAutoCommands()
 endfunction
 
 " Determines if whitespace highlighting should currently be skipped
@@ -175,6 +186,10 @@ endfunction
 
 " Run :StripWhitespace to remove end of line whitespace
 command! -range=% StripWhitespace call <SID>StripWhitespace( <line1>, <line2> )
+" Run :EnableStripWhitespaceOnSave to enable whitespace stripping on save
+command! EnableStripWhitespaceOnSave call <SID>EnableStripWhitespaceOnSave()
+" Run :DisableStripWhitespaceOnSave to disable whitespace stripping on save
+command! DisableStripWhitespaceOnSave call <SID>DisableStripWhitespaceOnSave()
 " Run :ToggleStripWhitespaceOnSave to enable/disable whitespace stripping on save
 command! ToggleStripWhitespaceOnSave call <SID>ToggleStripWhitespaceOnSave()
 " Run :EnableWhitespace to enable whitespace highlighting
