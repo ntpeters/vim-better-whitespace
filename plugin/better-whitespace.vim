@@ -39,6 +39,11 @@ call s:InitVariable('g:better_whitespace_filetypes_blacklist', default_blacklist
 " Disable verbosity by default
 call s:InitVariable('g:better_whitespace_verbosity', 0)
 
+" Define custom whitespace character group to include all horizontal unicode
+" whitespace characters. Vim's '\s' class only includes ASCII spaces and tabs.
+let s:whitespace_group='[\u0009\u0020\u00a0\u1680\u180e\u2000-\u200b\u202f\u205f\u3000\ufeff]'
+let s:eol_whitespace_pattern = s:whitespace_group . '\+$'
+
 " Only init once
 let s:better_whitespace_initialized = 0
 
@@ -117,7 +122,7 @@ function! s:CurrentLineWhitespaceOff( level )
         if a:level == 'hard'
             let g:current_line_whitespace_disabled_hard = 1
             let g:current_line_whitespace_disabled_soft = 0
-            call s:InAllWindows('syn clear ExtraWhitespace | match ExtraWhitespace /\s\+$/')
+            call s:InAllWindows('syn clear ExtraWhitespace | match ExtraWhitespace "' . s:eol_whitespace_pattern . '"')
             call <SID>Echo("Current Line Hightlight Off (hard)")
         elseif a:level == 'soft'
             let g:current_line_whitespace_disabled_soft = 1
@@ -136,7 +141,7 @@ function! s:CurrentLineWhitespaceOn()
         let g:current_line_whitespace_disabled_hard = 0
         let g:current_line_whitespace_disabled_soft = 0
         call <SID>SetupAutoCommands()
-        call s:InAllWindows('syn clear ExtraWhitespace | match ExtraWhitespace /\s\+$/')
+        call s:InAllWindows('syn clear ExtraWhitespace | match ExtraWhitespace "' . s:eol_whitespace_pattern . '"')
         call <SID>Echo("Current Line Hightlight On")
     endif
 endfunction
@@ -149,7 +154,7 @@ function! s:StripWhitespace( line1, line2 )
     let c = col(".")
 
     " Strip the whitespace
-    silent! execute ':' . a:line1 . ',' . a:line2 . 's/\s\+$//e'
+    silent! execute ':' . a:line1 . ',' . a:line2 . 's/' . s:eol_whitespace_pattern . '//e'
 
     " Restore the saved search and cursor position
     let @/=_s
@@ -212,7 +217,7 @@ autocmd ColorScheme * call <SID>WhitespaceInit()
 function! s:PerformMatchHighlight(pattern)
     call s:InitVariable('b:better_whitespace_enabled', !<SID>ShouldSkipHighlight())
     if b:better_whitespace_enabled == 1
-        exe 'match ExtraWhitespace ' . a:pattern
+        exe 'match ExtraWhitespace "' . a:pattern . '"'
     else
         match ExtraWhitespace ''
     endif
@@ -222,7 +227,24 @@ function! s:PerformSyntaxHighlight(pattern)
     syn clear ExtraWhitespace
     call s:InitVariable('b:better_whitespace_enabled', !<SID>ShouldSkipHighlight())
     if b:better_whitespace_enabled == 1
-        exe 'syn match ExtraWhitespace excludenl ' . a:pattern
+        exe 'syn match ExtraWhitespace excludenl "' . a:pattern . '"'
+    endif
+endfunction
+
+function! s:HighlightEOLWhitespace(type)
+    if (a:type == 'match')
+        call s:PerformMatchHighlight(s:eol_whitespace_pattern)
+    elseif (a:type == 'syntax')
+        call s:PerformSyntaxHighlight(s:eol_whitespace_pattern)
+    endif
+endfunction
+
+function! s:HighlightEOLWhitespaceExceptCurrentLine(type)
+    let a:exclude_current_line_eol_whitespace_pattern = '\%<' . line(".") .  'l' . s:eol_whitespace_pattern . '\|\%>' . line(".") .  'l' . s:eol_whitespace_pattern
+    if (a:type == 'match')
+        call s:PerformMatchHighlight(a:exclude_current_line_eol_whitespace_pattern)
+    elseif (a:type == 'syntax')
+        call s:PerformSyntaxHighlight(a:exclude_current_line_eol_whitespace_pattern)
     endif
 endfunction
 
@@ -237,28 +259,29 @@ function! <SID>SetupAutoCommands()
                 call <SID>WhitespaceInit()
             endif
 
+
             " Check if current line is disabled softly
             if g:current_line_whitespace_disabled_soft == 0
                 " Highlight all whitespace upon entering buffer
-                call <SID>PerformMatchHighlight('/\s\+$/')
+                call <SID>PerformMatchHighlight(s:eol_whitespace_pattern)
                 " Check if current line highglighting is disabled
                 if g:current_line_whitespace_disabled_hard == 1
                     " Never highlight whitespace on current line
-                    autocmd InsertEnter,CursorMoved,CursorMovedI * call <SID>PerformMatchHighlight('/\%<' . line(".") .  'l\s\+$\|\%>' . line(".") .  'l\s\+$/')
+                    autocmd InsertEnter,CursorMoved,CursorMovedI * call <SID>HighlightEOLWhitespaceExceptCurrentLine('match')
                 else
                     " When in insert mode, do not highlight whitespace on the current line
-                    autocmd InsertEnter,CursorMovedI * call <SID>PerformMatchHighlight('/\%<' . line(".") .  'l\s\+$\|\%>' . line(".") .  'l\s\+$/')
+                    autocmd InsertEnter,CursorMovedI * call <SID>HighlightEOLWhitespaceExceptCurrentLine('match')
                 endif
                 " Highlight all whitespace when exiting insert mode
-                autocmd InsertLeave,BufReadPost * call <SID>PerformMatchHighlight('/\s\+$/')
+                autocmd InsertLeave,BufReadPost * call <SID>HighlightEOLWhitespace('match')
                 " Clear whitespace highlighting when leaving buffer
                 autocmd BufWinLeave * match ExtraWhitespace ''
             else
                 " Highlight extraneous whitespace at the end of lines, but not the
                 " current line.
-                call <SID>PerformSyntaxHighlight('/\s\+$/')
-                autocmd InsertEnter * call <SID>PerformSyntaxHighlight('/\s\+\%#\@!$/')
-                autocmd InsertLeave,BufReadPost * call <SID>PerformSyntaxHighlight('/\s\+$/')
+                call <SID>HighlightEOLWhitespace('syntax')
+                autocmd InsertEnter * call <SID>HighlightEOLWhitespaceExceptCurrentLine('syntax')
+                autocmd InsertLeave,BufReadPost * call <SID>HighlightEOLWhitespace('syntax')
             endif
         endif
 
