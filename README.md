@@ -1,6 +1,6 @@
 #Vim Better Whitespace Plugin
 
-This plugin causes all trailing whitespace characters (spaces and tabs) to be
+This plugin causes all trailing whitespace characters (see [Supported Whitespace Characters](#supported-whitespace-characters) below) to be
 highlighted. Whitespace for the current line will not be highlighted
 while in insert mode. It is possible to disable current line highlighting while in other
 modes as well (see options below). A helper function `:StripWhitespace` is also provided
