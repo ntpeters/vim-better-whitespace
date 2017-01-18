@@ -109,6 +109,11 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
                                             'diff', 'gitcommit', 'unite', 'qf', 'help']
     ```
 
+*  To enable matching of space characters that appear before or in-between tabs, add the following to your `.vimrc`:
+    ```
+    let g:match_spaces_that_precede_tabs =1
+    ```
+
 *  To enable verbose output for each command, set verbosity in your `.vimrc`:
     ```
     let g:better_whitespace_verbosity=1
