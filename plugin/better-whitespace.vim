@@ -21,6 +21,9 @@ call s:InitVariable('g:better_whitespace_operator', '<space>')
 " Set this to enable/disable whitespace highlighting
 call s:InitVariable('g:better_whitespace_enabled', 1)
 
+" Set this to match space characters that appear before or in-between tabs
+call s:InitVariable('g:match_spaces_that_precede_tabs', 0)
+
 " Set this to disable highlighting on the current line in all modes
 " WARNING: This checks for current line on cursor move, which can significantly
 "          impact the performance of Vim (especially on large files)
@@ -47,13 +50,17 @@ call s:InitVariable('g:better_whitespace_filetypes_blacklist', default_blacklist
 call s:InitVariable('g:better_whitespace_verbosity', 0)
 
 " Define custom whitespace character group to include all horizontal unicode
-" whitespace characters. Vim's '\s' class only includes ASCII spaces and tabs.
-let s:whitespace_chars='\u0009\u0020\u00a0\u1680\u180e\u2000-\u200b\u202f\u205f\u3000\ufeff'
-let s:eol_whitespace_pattern = '[' . s:whitespace_chars . ']\+$'
+" whitespace characters except tab (\u0009). Vim's '\s' class only includes ASCII spaces and tabs.
+let s:whitespace_chars='\u0020\u00a0\u1680\u180e\u2000-\u200b\u202f\u205f\u3000\ufeff'
+let s:eol_whitespace_pattern = '[\u0009' . s:whitespace_chars . ']\+$'
 
 call s:InitVariable('g:better_whitespace_skip_empty_lines', 0)
 if g:better_whitespace_skip_empty_lines == 1
-    let s:eol_whitespace_pattern = '[^' . s:whitespace_chars . ']\@1<=' . s:eol_whitespace_pattern
+    let s:eol_whitespace_pattern = '[^\u0009' . s:whitespace_chars . ']\@1<=' . s:eol_whitespace_pattern
+endif
+
+if g:match_spaces_that_precede_tabs == 1
+    let s:eol_whitespace_pattern .= '\|[' . s:whitespace_chars . ']\+\ze[\u0009]'
 endif
 
 " Only init once
