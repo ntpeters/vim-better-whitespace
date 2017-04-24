@@ -1,4 +1,4 @@
-#Vim Better Whitespace Plugin
+# Vim Better Whitespace Plugin
 
 This plugin causes all trailing whitespace characters (see [Supported Whitespace Characters](#supported-whitespace-characters) below) to be
 highlighted. Whitespace for the current line will not be highlighted
@@ -9,7 +9,7 @@ to make whitespace cleaning painless.
 Here is a screenshot of this plugin at work:
 ![Example Screenshot](http://i.imgur.com/St7yHth.png)
 
-##Installation
+## Installation
 There are a few ways you can go about installing this plugin:
 
 1.  If you have [Vundle](https://github.com/gmarik/Vundle.vim) you can simply add:
@@ -26,7 +26,7 @@ There are a few ways you can go about installing this plugin:
     ```
 3.  While this plugin can also be installed by copying its contents into your `~/.vim/` directory, I would highly recommend using one of the above methods as they make managing your Vim plugins painless.
 
-##Usage
+## Usage
 Whitespace highlighting is enabled by default, with a highlight color of red.
 
 *  To set a custom highlight color, just call:
@@ -114,7 +114,7 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     let g:better_whitespace_verbosity=1
     ```
 
-##Supported Whitespace Characters
+## Supported Whitespace Characters
 Due to the fact that the built-in whitespace character class for patterns (`\s`)
 only matches against tabs and spaces, this plugin defines its own list of
 horizontal whitepsace characters to match for both highlighting and stripping.
@@ -151,7 +151,7 @@ working with them: whitespace_examples.txt
 If you encounter any additional whitespace characters I have missed here,
 please submit a pull request.
 
-##Screenshots
+## Screenshots
 Here are a couple more screenshots of the plugin at work.
 
 This screenshot shows the current line not being highlighted in insert mode:
@@ -163,7 +163,7 @@ This screenshot shows the current line not being highlighted in normal mode( `Cu
 This screenshot shows that highlighting works fine for spaces, tabs, and a mixture of both:
 ![Tabs Screenshot](http://i.imgur.com/bbsVRUf.png)
 
-##Frequently Asked Questions
+## Frequently Asked Questions
 Hopefully some of the most common questions will be answered here.  If you still have a question
 that I have failed to address, please open an issue and ask it!
 
@@ -224,14 +224,14 @@ A:  If you know of a better way to do something I am attempting in this plugin, 
     me or make the changes yourself and open a pull request. If I am doing something that is bad
     or can be improved, I more than willing to hear about it!
 
-##Promotion
+## Promotion
 If you like this plugin, please star it on Github and vote it up at Vim.org!
 
 Repository exists at: http://github.com/ntpeters/vim-better-whitespace
 
 Plugin also hosted at: http://www.vim.org/scripts/script.php?script_id=4859
 
-##Credits
+## Credits
 Originally inspired by: https://github.com/bronson/vim-trailing-whitespace
 
 Based on:
