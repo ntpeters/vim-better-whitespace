@@ -264,7 +264,7 @@ function! <SID>SetupAutoCommands()
             if g:current_line_whitespace_disabled_soft == 0
                 " Highlight all whitespace upon entering buffer
                 call <SID>PerformMatchHighlight(s:eol_whitespace_pattern)
-                " Check if current line highglighting is disabled
+                " Check if current line highlighting is disabled
                 if g:current_line_whitespace_disabled_hard == 1
                     " Never highlight whitespace on current line
                     autocmd InsertEnter,CursorMoved,CursorMovedI * call <SID>HighlightEOLWhitespaceExceptCurrentLine('match')
