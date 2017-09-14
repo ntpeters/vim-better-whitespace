@@ -123,12 +123,12 @@ function! s:CurrentLineWhitespaceOff( level )
             let g:current_line_whitespace_disabled_hard = 1
             let g:current_line_whitespace_disabled_soft = 0
             call s:InAllWindows('syn clear ExtraWhitespace | match ExtraWhitespace "' . s:eol_whitespace_pattern . '"')
-            call <SID>Echo("Current Line Hightlight Off (hard)")
+            call <SID>Echo("Current Line Highlight Off (hard)")
         elseif a:level == 'soft'
             let g:current_line_whitespace_disabled_soft = 1
             let g:current_line_whitespace_disabled_hard = 0
             call s:InAllWindows("match ExtraWhitespace ''")
-            call <SID>Echo("Current Line Hightlight Off (soft)")
+            call <SID>Echo("Current Line Highlight Off (soft)")
         endif
         " Re-run auto commands with the new settings
         call <SID>SetupAutoCommands()
@@ -142,7 +142,7 @@ function! s:CurrentLineWhitespaceOn()
         let g:current_line_whitespace_disabled_soft = 0
         call <SID>SetupAutoCommands()
         call s:InAllWindows('syn clear ExtraWhitespace | match ExtraWhitespace "' . s:eol_whitespace_pattern . '"')
-        call <SID>Echo("Current Line Hightlight On")
+        call <SID>Echo("Current Line Highlight On")
     endif
 endfunction
 
