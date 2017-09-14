@@ -38,7 +38,7 @@ This enables/disables stripping of extra whitespace on file save.
                                                 *CurrentLineWhitespaceOff*
 
 Calling :CurrentLineWhitespaceOff with the option either 'hard' or 'soft' will
-disable whitespace highlighting for the currentline.
+disable whitespace highlighting for the current line.
 
 If 'hard' option is used, then all highlighting remains the same except that
 the current line is not highlighted.
@@ -54,7 +54,7 @@ this option.
                                                 *CurrentLineWhitespaceOn
 
 Call :CurrentLineWhitespaceOn to enable whitespace highlighting for the current
-line. Highlighting is still disabled for the current line while in inserte mode.
+line. Highlighting is still disabled for the current line while in insert mode.
 
 Repository exists at: http://github.com/ntpeters/vim-better-whitespace
 
