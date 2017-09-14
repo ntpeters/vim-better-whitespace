@@ -33,7 +33,10 @@ and then execute it.
 
                                                 *ToggleStripWhitespaceOnSave*
 
-This enables/disables stripping of extra whitespace on file save.
+This enables/disables stripping of extra whitespace on file save. By default
+you will be asked for confirmation when you save a file and there is whitespace
+to be stripped. This confirmation dialog is controlled by the
+g:strip_whitespace_confirm variable.
 
                                                 *CurrentLineWhitespaceOff*
 

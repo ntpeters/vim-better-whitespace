@@ -93,6 +93,13 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
         Note that `<buffer>` is a keyword here denoting operation on the current buffer and
         should stay just as it appears in the line above.
 
+    *  By default, you will be asked for confirmation before whitespace is
+       stripped when you save the file. This can be disabled by adding the
+       following to your `~/.vimrc`:
+       ```
+       let g:strip_whitespace_confirm=0
+       ```
+
 *  To disable this plugin for specific file types, add the following to your `~/.vimrc`:
     ```
     let g:better_whitespace_filetypes_blacklist=['<filetype1>', '<filetype2>', '<etc>']
