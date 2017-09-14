@@ -146,6 +146,17 @@ function! s:CurrentLineWhitespaceOn()
     endif
 endfunction
 
+" Checks for extraneous whitespace in the file
+function! s:DetectWhitespace( line1, line2 )
+    " Search for whitespace; the 'w' flag causes the search to wrap around to
+    " the beginning  of the file if necessary and the 'n' causes the cursor to
+    " stay where it started. A non-zero return value means that whitespace has
+    " been found in the file.
+    let retval = search(s:eol_whitespace_pattern, 'wn')
+
+    return retval
+endfunction
+
 " Removes all extraneous whitespace in the file
 function! s:StripWhitespace( line1, line2 )
     " Save the current search and cursor position
