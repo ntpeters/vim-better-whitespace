@@ -222,7 +222,7 @@ A:  No, and no.  Sorry, but both are outside the scope of this plugin.  The purp
 A:  If you know of a better way to do something I am attempting in this plugin, or if I am doing
     something improperly/not reccomended then let me know! Please either open an issue informing
     me or make the changes yourself and open a pull request. If I am doing something that is bad
-    or can be improved, I more than willing to hear about it!
+    or can be improved, I am more than willing to hear about it!
 
 ## Promotion
 If you like this plugin, please star it on Github and vote it up at Vim.org!
