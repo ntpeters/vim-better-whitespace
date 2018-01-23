@@ -34,8 +34,10 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     highlight ExtraWhitespace ctermbg=<desired_color>
     ```
 
-*  To toggle whitespace highlighting on/off, call:
+*  To enable/disable/toggle whitespace highlighting in a buffer, call one of:
     ```
+    :EnableWhitespace
+    :DisableWhitespace
     :ToggleWhitespace
     ```
 
@@ -51,7 +53,7 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
 
     *  The level `soft` will use syntax based highlighting, so there shouldn't be
         a performance hit like with the `hard` option.  The drawback is that this
-        highlighting will have a lower priority and may be overwritten by higher
+        highlighting will have a lower priority and may be overwritten by higher 
         priority highlighting.
 
 *  To re-enable highlighting for the current line in normal mode:
@@ -67,8 +69,10 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     the file that it cleans, either give it a range or select a group of lines
     in visual mode and then execute it.
 
-*  To enable/disable stripping of extra whitespace on file save, call:
+*  To enable/disable stripping of extra whitespace on file save for a buffer, call one of:
     ```
+    :EnableStripWhitespaceOnSave
+    :DisableStripWhitespaceOnSave
     :ToggleStripWhitespaceOnSave
     ```
     This will strip all trailing whitespace everytime you save the file for all file types.
@@ -76,7 +80,7 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     *  If you want this behaviour by default for all filetypes, add the following to your `~/.vimrc`:
 
         ```
-        autocmd BufEnter * EnableStripWhitespaceOnSave
+        let g:strip_whitespace_on_save = 1
         ```
 
         For exceptions of all see ```g:better_whitespace_filetypes_blacklist```.
@@ -85,13 +89,11 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
         the following to your `~/.vimrc`:
 
         ```
-        autocmd FileType <desired_filetypes> autocmd BufEnter <buffer> EnableStripWhitespaceOnSave
+        autocmd FileType <desired_filetypes> EnableStripWhitespaceOnSave
         ```
 
         where `<desired_filetypes>` is a comma separated list of the file types you want
         to be stripped of whitespace on file save ( ie. `javascript,c,cpp,java,html,ruby` )
-        Note that `<buffer>` is a keyword here denoting operation on the current buffer and
-        should stay just as it appears in the line above.
 
 *  To disable this plugin for specific file types, add the following to your `~/.vimrc`:
     ```
@@ -107,6 +109,15 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     ```
     let g:better_whitespace_filetypes_blacklist=['<filetype1>', '<filetype2>', '<etc>',
                                             'diff', 'gitcommit', 'unite', 'qf', 'help']
+    ```
+
+    This blacklist can be overriden on a per-buffer basis using the buffer toggle enable and
+    disable commands presented above. For example:
+    ```vim
+    " highlight whitespace in markdown files, though stripping remains disabled by the blacklist
+    :autocmd FileType markdown EnableWhitespace
+    " Do not modify kernel files, even though their type is not blacklisted and highlighting is enabled
+    :autocmd BufRead /usr/src/linux* DisableStripWhitespaceOnSave
     ```
 
 *  To enable verbose output for each command, set verbosity in your `.vimrc`:
