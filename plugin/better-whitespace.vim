@@ -15,6 +15,9 @@ function! s:InitVariable(var, value)
     endif
 endfunction
 
+" Operator for StripWhitespace (empty to disable)
+call s:InitVariable('g:better_whitespace_operator', '<space>')
+
 " Set this to enable/disable whitespace highlighting
 call s:InitVariable('g:better_whitespace_enabled', 1)
 
@@ -208,6 +211,20 @@ command! ToggleWhitespace call <SID>ToggleWhitespace()
 command! -nargs=* CurrentLineWhitespaceOff call <SID>CurrentLineWhitespaceOff( <f-args> )
 " Run :CurrentLineWhitespaceOn to turn on whitespace for the current line
 command! CurrentLineWhitespaceOn call <SID>CurrentLineWhitespaceOn()
+
+if !empty('g:better_whitespace_operator')
+    function! s:StripWhitespaceMotion(type)
+        call <SID>StripWhitespace(line("'["), line("']"))
+    endfunction
+
+    " Visual mode
+    exe "xmap <silent> ".g:better_whitespace_operator." :StripWhitespace<CR>"
+    " Normal mode (+ space, with line count)
+    exe "nmap <silent> ".g:better_whitespace_operator."<space> :<C-U>exe '.,+'.v:count' StripWhitespace'<CR>"
+    " Other motions
+    exe "nmap <silent> ".g:better_whitespace_operator."        :<C-U>set opfunc=<SID>StripWhitespaceMotion<CR>g@"
+endif
+
 
 " Process auto commands upon load, update local enabled on filetype change
 autocmd FileType * let b:better_whitespace_enabled = !<SID>ShouldSkipHighlight() | call <SID>SetupAutoCommands()
