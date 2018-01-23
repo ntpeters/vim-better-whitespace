@@ -161,6 +161,47 @@ function! s:StripWhitespace( line1, line2 )
     call cursor(l, c)
 endfunction
 
+" Search for trailing whitespace
+function! s:GotoTrailingWhitespace(search_backwards, from, to)
+    " Save the current search
+    let _s=@/
+    let l = line('.')
+    let c = col('.')
+
+    " Move to start of range (if we are outside of it)
+    if l < a:from || l > a:to
+        if a:search_backwards != 0
+            call cursor(a:to, 0)
+            call cursor(0, col('$'))
+        else
+            call cursor(a:from, 1)
+        endif
+    endif
+
+    " Set options (search direction, last searched line)
+    let opts = 'wz'
+    let until = a:to
+    if a:search_backwards != 0
+        let opts .= 'b'
+        let until = a:from
+    endif
+    " Full file, allow wrapping
+    if a:from == 1 && a:to == line('$')
+        let until = 0
+    endif
+
+    " Go to pattern
+    let found = search(s:eol_whitespace_pattern, opts, until)
+
+    " Restore position if there is no match (in case we moved it)
+    if found == 0
+        call cursor(l, c)
+    endif
+
+    " Restore the saved search
+    let @/=_s
+endfunction
+
 " Strip whitespace on file save
 function! s:EnableStripWhitespaceOnSave()
     let g:strip_whitespace_on_save = 1
@@ -208,6 +249,9 @@ command! ToggleWhitespace call <SID>ToggleWhitespace()
 command! -nargs=* CurrentLineWhitespaceOff call <SID>CurrentLineWhitespaceOff( <f-args> )
 " Run :CurrentLineWhitespaceOn to turn on whitespace for the current line
 command! CurrentLineWhitespaceOn call <SID>CurrentLineWhitespaceOn()
+" Search for trailing white space forwards or backwards
+command! -range=% NextTrailingWhitespace call <SID>GotoTrailingWhitespace(0, <line1>, <line2>)
+command! -range=% PrevTrailingWhitespace call <SID>GotoTrailingWhitespace(1, <line1>, <line2>)
 
 " Process auto commands upon load, update local enabled on filetype change
 autocmd FileType * let b:better_whitespace_enabled = !<SID>ShouldSkipHighlight() | call <SID>SetupAutoCommands()
