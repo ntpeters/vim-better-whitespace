@@ -1,10 +1,10 @@
 # Vim Better Whitespace Plugin
 
-This plugin causes all trailing whitespace characters (see [Supported Whitespace Characters](#supported-whitespace-characters) below) to be
-highlighted. Whitespace for the current line will not be highlighted
-while in insert mode. It is possible to disable current line highlighting while in other
-modes as well (see options below). A helper function `:StripWhitespace` is also provided
-to make whitespace cleaning painless.
+This plugin causes all trailing whitespace characters (see [Supported Whitespace
+Characters](#supported-whitespace-characters) below) to be highlighted. Whitespace for the current line will
+not be highlighted while in insert mode. It is possible to disable current line highlighting while in other
+modes as well (see options below). A helper function `:StripWhitespace` is also provided to make whitespace
+cleaning painless.
 
 Here is a screenshot of this plugin at work:
 ![Example Screenshot](http://i.imgur.com/St7yHth.png)
@@ -13,36 +13,45 @@ Here is a screenshot of this plugin at work:
 There are a few ways you can go about installing this plugin:
 
 1.  If you have [Vundle](https://github.com/gmarik/Vundle.vim) you can simply add:
-    ```
+    ```vim
     Plugin 'ntpeters/vim-better-whitespace'
     ```
     to your `.vimrc` file then run:
-    ```
+    ```vim
     :PluginInstall
     ```
 2.  If you are using [Pathogen](https://github.com/tpope/vim-pathogen), you can just run the following command:
     ```
     git clone git://github.com/ntpeters/vim-better-whitespace.git ~/.vim/bundle/vim-better-whitespace
     ```
-3.  While this plugin can also be installed by copying its contents into your `~/.vim/` directory, I would highly recommend using one of the above methods as they make managing your Vim plugins painless.
+3.  While this plugin can also be installed by copying its contents into your `~/.vim/` directory, I would
+    highly recommend using one of the above methods as they make managing your Vim plugins painless.
 
 ## Usage
 Whitespace highlighting is enabled by default, with a highlight color of red.
 
 *  To set a custom highlight color, just call:
-    ```
+    ```vim
     highlight ExtraWhitespace ctermbg=<desired_color>
     ```
 
-*  To enable/disable/toggle whitespace highlighting in a buffer, call one of:
+*  To enable highlighting and stripping whitespace on save by default, use respectively
+    ```vim
+    let g:better_whitespace_enabled=1
+    let g:strip_whitespace_on_save=1
     ```
+    Set them to 0 to disable this default behaviour. See below for the blacklist of file types
+    and per-buffer settings.
+
+*  To enable/disable/toggle whitespace highlighting in a buffer, call one of:
+    ```vim
     :EnableWhitespace
     :DisableWhitespace
     :ToggleWhitespace
     ```
 
 *  To disable highlighting for the current line in normal mode call:
-    ```
+    ```vim
     :CurrentLineWhitespaceOff <level>
     ```
     Where `<level>` is either `hard` or `soft`.
@@ -57,12 +66,12 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
         priority highlighting.
 
 *  To re-enable highlighting for the current line in normal mode:
-    ```
+    ```vim
     :CurrentLineWhitespaceOn
     ```
 
 *  To clean extra whitespace, call:
-    ```
+    ```vim
     :StripWhitespace
     ```
     By default this operates on the entire file. To restrict the portion of
@@ -81,7 +90,7 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
         lines affected by the motion given. Set to the empty string to deactivate the operator.
 
 *  To enable/disable stripping of extra whitespace on file save for a buffer, call one of:
-    ```
+    ```vim
     :EnableStripWhitespaceOnSave
     :DisableStripWhitespaceOnSave
     :ToggleStripWhitespaceOnSave
@@ -90,7 +99,7 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
 
     *  If you want this behaviour by default for all filetypes, add the following to your `~/.vimrc`:
 
-        ```
+        ```vim
         let g:strip_whitespace_on_save = 1
         ```
 
@@ -99,7 +108,7 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     *  If you would prefer to only strip whitespace for certain filetypes, add
         the following to your `~/.vimrc`:
 
-        ```
+        ```vim
         autocmd FileType <desired_filetypes> EnableStripWhitespaceOnSave
         ```
 
@@ -107,17 +116,17 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
         to be stripped of whitespace on file save ( ie. `javascript,c,cpp,java,html,ruby` )
 
 *  To disable this plugin for specific file types, add the following to your `~/.vimrc`:
-    ```
+    ```vim
     let g:better_whitespace_filetypes_blacklist=['<filetype1>', '<filetype2>', '<etc>']
     ```
     This replaces the filetypes from the default list of blacklisted filetypes. The
     default types that are blacklisted are:
-    ```
+    ```vim
     ['diff', 'gitcommit', 'unite', 'qf', 'help', 'markdown']
     ```
     If you do not want any of these filetypes unignored, simply include them in the
     blacklist:
-    ```
+    ```vim
     let g:better_whitespace_filetypes_blacklist=['<filetype1>', '<filetype2>', '<etc>',
                                             'diff', 'gitcommit', 'unite', 'qf', 'help']
     ```
@@ -132,25 +141,21 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     ```
 
 *  To strip white lines at the end of the file when stripping whitespace, set this option in your `.vimrc`:
-    ```
+    ```vim
     let g:strip_whitelines_at_eof=1
     ```
 
 *  To highlight space characters that appear before or in-between tabs, add the following to your `.vimrc`:
-    ```
+    ```vim
     let g:show_spaces_that_precede_tabs=1
     ```
-    Such spaces can not be automatically removed by this plugin, though you can try `=` to fix indentation.
+    Such spaces can **not** be automatically removed by this plugin, though you can try
+    [`=` to fix indentation](http://vimdoc.sourceforge.net/htmldoc/change.html#=).
     You can still navigate to the highlighted spaces with Next/PrevTrailingWhitespace (see below), and fix
     them manually.
 
-*  To enable verbose output for each command, set verbosity in your `.vimrc`:
-    ```
-    let g:better_whitespace_verbosity=1
-    ```
-
-*  To skip lines that contain only whitespace, set the following in your `.vimrc`:
-    ```
+*  To ignore lines that contain only whitespace, set the following in your `.vimrc`:
+    ```vim
     let g:better_whitespace_skip_empty_lines=1
     ```
 
@@ -165,6 +170,12 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     ```vim
     :'<,'>NextTrailingWhitespace
     ```
+
+*  To enable verbose output for each command, set verbosity in your `.vimrc`:
+    ```vim
+    let g:better_whitespace_verbosity=1
+    ```
+
 
 ## Supported Whitespace Characters
 Due to the fact that the built-in whitespace character class for patterns (`\s`)
@@ -209,7 +220,7 @@ Here are a couple more screenshots of the plugin at work.
 This screenshot shows the current line not being highlighted in insert mode:
 ![Insert Screenthot](http://i.imgur.com/RNHR9KX.png)
 
-This screenshot shows the current line not being highlighted in normal mode( `CurrentLineWhitespaceOff hard` ):
+This screenshot shows the current line not being highlighted in normal mode(`CurrentLineWhitespaceOff hard`):
 ![Normal Screenshot](http://i.imgur.com/o888Z7b.png)
 
 This screenshot shows that highlighting works fine for spaces, tabs, and a mixture of both:
@@ -264,10 +275,11 @@ A:  It is true that a large part of this is fairly simple to make a part of an i
 **Q:  Can you add indentation highlighting for spaces/tabs? Can you add highlighting for other
     types of white space?**
 
-A:  No, and no.  Sorry, but both are outside the scope of this plugin.  The purpose of this plugin
-    is to provide a better experience for showing and dealing with extra white space.  There is
-    already an amazing plugin for showing indentation in Vim called [Indent Guides](https://github.com/nathanaelkane/vim-indent-guides).
-    For other types of white space highlighting, [listchars](http://vimdoc.sourceforge.net/htmldoc/options.html#'listchars') should be sufficient.
+A:  No, and no. Sorry, but both are outside the scope of this plugin. The purpose of this plugin
+    is to provide a better experience for showing and dealing with extra white space. There is already an
+    amazing plugin for showing indentation in Vim called [Indent
+    Guides](https://github.com/nathanaelkane/vim-indent-guides). For other types of white space highlighting,
+    [listchars](http://vimdoc.sourceforge.net/htmldoc/options.html#'listchars') should be sufficient.
 
 **Q:  I have a better way to do something in this plugin. OR You're doing something stupid/wrong/bad.**
 
