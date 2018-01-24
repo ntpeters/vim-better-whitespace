@@ -117,7 +117,7 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
 ## Supported Whitespace Characters
 Due to the fact that the built-in whitespace character class for patterns (`\s`)
 only matches against tabs and spaces, this plugin defines its own list of
-horizontal whitepsace characters to match for both highlighting and stripping.
+horizontal whitespace characters to match for both highlighting and stripping.
 
 This is list should match against all ASCII and Unicode horizontal whitespace
 characters:
