@@ -22,7 +22,7 @@ call s:InitVariable('g:better_whitespace_operator', '<space>')
 call s:InitVariable('g:better_whitespace_enabled', 1)
 
 " Set this to match space characters that appear before or in-between tabs
-call s:InitVariable('g:match_spaces_that_precede_tabs', 0)
+call s:InitVariable('g:show_spaces_that_precede_tabs', 0)
 
 " Set this to disable highlighting on the current line in all modes
 " WARNING: This checks for current line on cursor move, which can significantly
@@ -59,7 +59,8 @@ if g:better_whitespace_skip_empty_lines == 1
     let s:eol_whitespace_pattern = '[^\u0009' . s:whitespace_chars . ']\@1<=' . s:eol_whitespace_pattern
 endif
 
-if g:match_spaces_that_precede_tabs == 1
+let s:strip_whitespace_pattern = s:eol_whitespace_pattern
+if g:show_spaces_that_precede_tabs == 1
     let s:eol_whitespace_pattern .= '\|[' . s:whitespace_chars . ']\+\ze[\u0009]'
 endif
 
@@ -173,7 +174,7 @@ function! s:StripWhitespace( line1, line2 )
     let c = col(".")
 
     " Strip the whitespace
-    silent! execute ':' . a:line1 . ',' . a:line2 . 's/' . s:eol_whitespace_pattern . '//e'
+    silent! execute ':' . a:line1 . ',' . a:line2 . 's/' . s:strip_whitespace_pattern . '//e'
 
     " Strip empty lines at EOF
     if g:strip_whitelines_at_eof == 1

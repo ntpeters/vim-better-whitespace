@@ -136,10 +136,13 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     let g:strip_whitelines_at_eof=1
     ```
 
-*  To enable matching of space characters that appear before or in-between tabs, add the following to your `.vimrc`:
+*  To highlight space characters that appear before or in-between tabs, add the following to your `.vimrc`:
     ```
-    let g:match_spaces_that_precede_tabs=1
+    let g:show_spaces_that_precede_tabs=1
     ```
+    Such spaces can not be automatically removed by this plugin, though you can try `=` to fix indentation.
+    You can still navigate to the highlighted spaces with Next/PrevTrailingWhitespace (see below), and fix
+    them manually.
 
 *  To enable verbose output for each command, set verbosity in your `.vimrc`:
     ```
