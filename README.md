@@ -53,7 +53,7 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
 
     *  The level `soft` will use syntax based highlighting, so there shouldn't be
         a performance hit like with the `hard` option.  The drawback is that this
-        highlighting will have a lower priority and may be overwritten by higher 
+        highlighting will have a lower priority and may be overwritten by higher
         priority highlighting.
 
 *  To re-enable highlighting for the current line in normal mode:
@@ -118,6 +118,11 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     :autocmd FileType markdown EnableWhitespace
     " Do not modify kernel files, even though their type is not blacklisted and highlighting is enabled
     :autocmd BufRead /usr/src/linux* DisableStripWhitespaceOnSave
+    ```
+
+*  To strip white lines at the end of the file when stripping whitespace, set this option in your `.vimrc`:
+    ```
+    let g:strip_whitelines_at_eof=1
     ```
 
 *  To enable verbose output for each command, set verbosity in your `.vimrc`:

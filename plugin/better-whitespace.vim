@@ -32,6 +32,10 @@ call s:InitVariable('g:current_line_whitespace_disabled_soft', 0)
 " Set this to enable stripping whitespace on file save
 call s:InitVariable('g:strip_whitespace_on_save', 0)
 
+" Set this to enable stripping white lines at the end of the file when we
+" strip whitespace
+call s:InitVariable('g:strip_whitelines_at_eof', 0)
+
 " Set this to blacklist specific filetypes
 let default_blacklist=['diff', 'gitcommit', 'unite', 'qf', 'help', 'markdown']
 call s:InitVariable('g:better_whitespace_filetypes_blacklist', default_blacklist)
@@ -160,6 +164,18 @@ function! s:StripWhitespace( line1, line2 )
 
     " Strip the whitespace
     silent! execute ':' . a:line1 . ',' . a:line2 . 's/' . s:eol_whitespace_pattern . '//e'
+
+    " Strip empty lines at EOF
+    if g:strip_whitelines_at_eof == 1
+        if &ff == 'dos'
+            let nl='\r\n'
+        elseif &ff == 'max'
+            let nl='\r'
+        else " unix
+            let nl='\n'
+        endif
+        silent! execute '%s/\('.nl.'\)\+\%$//'
+    endif
 
     " Restore the saved search and cursor position
     let @/=_s
