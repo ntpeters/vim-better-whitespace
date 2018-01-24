@@ -41,8 +41,13 @@ call s:InitVariable('g:better_whitespace_verbosity', 0)
 
 " Define custom whitespace character group to include all horizontal unicode
 " whitespace characters. Vim's '\s' class only includes ASCII spaces and tabs.
-let s:whitespace_group='[\u0009\u0020\u00a0\u1680\u180e\u2000-\u200b\u202f\u205f\u3000\ufeff]'
-let s:eol_whitespace_pattern = s:whitespace_group . '\+$'
+let s:whitespace_chars='\u0009\u0020\u00a0\u1680\u180e\u2000-\u200b\u202f\u205f\u3000\ufeff'
+let s:eol_whitespace_pattern = '[' . s:whitespace_chars . ']\+$'
+
+call s:InitVariable('g:better_whitespace_skip_empty_lines', 0)
+if g:better_whitespace_skip_empty_lines == 1
+    let s:eol_whitespace_pattern = '[^' . s:whitespace_chars . ']\@1<=' . s:eol_whitespace_pattern
+endif
 
 " Only init once
 let s:better_whitespace_initialized = 0
@@ -298,4 +303,3 @@ function! <SID>SetupAutoCommands()
 
     augroup END
 endfunction
-
