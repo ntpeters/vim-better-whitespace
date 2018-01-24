@@ -169,7 +169,7 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
 ## Supported Whitespace Characters
 Due to the fact that the built-in whitespace character class for patterns (`\s`)
 only matches against tabs and spaces, this plugin defines its own list of
-horizontal whitepsace characters to match for both highlighting and stripping.
+horizontal whitespace characters to match for both highlighting and stripping.
 
 This is list should match against all ASCII and Unicode horizontal whitespace
 characters:
@@ -274,7 +274,7 @@ A:  No, and no.  Sorry, but both are outside the scope of this plugin.  The purp
 A:  If you know of a better way to do something I am attempting in this plugin, or if I am doing
     something improperly/not reccomended then let me know! Please either open an issue informing
     me or make the changes yourself and open a pull request. If I am doing something that is bad
-    or can be improved, I more than willing to hear about it!
+    or can be improved, I am more than willing to hear about it!
 
 ## Promotion
 If you like this plugin, please star it on Github and vote it up at Vim.org!
