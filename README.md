@@ -146,6 +146,18 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     let g:better_whitespace_skip_empty_lines=1
     ```
 
+*  To navigate to the previous or next trailing whitespace, you can use commands that you
+    can map thusly in your `.vimrc`:
+    ```vim
+    nnoremap ]w :NextTrailingWhitespace<CR>
+    nnoremap [w :PrevTrailingWhitespace<CR>
+    ```
+    Note: those command take an optional range as argument, so you can for example select some
+    text in visual mode and search only inside it:
+    ```vim
+    :'<,'>NextTrailingWhitespace
+    ```
+
 ## Supported Whitespace Characters
 Due to the fact that the built-in whitespace character class for patterns (`\s`)
 only matches against tabs and spaces, this plugin defines its own list of
