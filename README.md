@@ -109,6 +109,11 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
                                             'diff', 'gitcommit', 'unite', 'qf', 'help']
     ```
 
+*  To strip white lines at the end of the file when stripping whitespace, set this option in your `.vimrc`:
+    ```
+    let g:strip_whitelines_at_eof=1
+    ```
+
 *  To enable verbose output for each command, set verbosity in your `.vimrc`:
     ```
     let g:better_whitespace_verbosity=1
