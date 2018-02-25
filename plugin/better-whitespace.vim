@@ -291,7 +291,7 @@ command! CurrentLineWhitespaceOn call <SID>CurrentLineWhitespaceOn()
 command! -range=% NextTrailingWhitespace call <SID>GotoTrailingWhitespace(0, <line1>, <line2>)
 command! -range=% PrevTrailingWhitespace call <SID>GotoTrailingWhitespace(1, <line1>, <line2>)
 
-if !empty('g:better_whitespace_operator')
+if !empty(g:better_whitespace_operator)
     function! s:StripWhitespaceMotion(type)
         call <SID>StripWhitespace(line("'["), line("']"))
     endfunction
