@@ -176,7 +176,6 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     let g:better_whitespace_verbosity=1
     ```
 
-
 ## Supported Whitespace Characters
 Due to the fact that the built-in whitespace character class for patterns (`\s`)
 only matches against tabs and spaces, this plugin defines its own list of
