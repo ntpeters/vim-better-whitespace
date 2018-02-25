@@ -15,11 +15,14 @@ function! s:InitVariable(var, value)
     endif
 endfunction
 
+" Operator for StripWhitespace (empty to disable)
+call s:InitVariable('g:better_whitespace_operator', '<space>')
+
 " Set this to enable/disable whitespace highlighting
 call s:InitVariable('g:better_whitespace_enabled', 1)
 
 " Set this to match space characters that appear before or in-between tabs
-call s:InitVariable('g:match_spaces_that_precede_tabs', 0)
+call s:InitVariable('g:show_spaces_that_precede_tabs', 0)
 
 " Set this to disable highlighting on the current line in all modes
 " WARNING: This checks for current line on cursor move, which can significantly
@@ -35,6 +38,10 @@ call s:InitVariable('g:current_line_whitespace_disabled_soft', 0)
 " Set this to enable stripping whitespace on file save
 call s:InitVariable('g:strip_whitespace_on_save', 0)
 
+" Set this to enable stripping white lines at the end of the file when we
+" strip whitespace
+call s:InitVariable('g:strip_whitelines_at_eof', 0)
+
 " Set this to blacklist specific filetypes
 let default_blacklist=['diff', 'gitcommit', 'unite', 'qf', 'help', 'markdown']
 call s:InitVariable('g:better_whitespace_filetypes_blacklist', default_blacklist)
@@ -43,11 +50,18 @@ call s:InitVariable('g:better_whitespace_filetypes_blacklist', default_blacklist
 call s:InitVariable('g:better_whitespace_verbosity', 0)
 
 " Define custom whitespace character group to include all horizontal unicode
-" whitespace characters. Vim's '\s' class only includes ASCII spaces and tabs.
-let s:whitespace_group='[\u0020\u00a0\u1680\u180e\u2000-\u200b\u202f\u205f\u3000\ufeff]'
-let s:eol_whitespace_pattern = s:whitespace_group . '\+$\|[\u0009]\+$'
-if g:match_spaces_that_precede_tabs == 1
-    let s:eol_whitespace_pattern .= '\|' . s:whitespace_group . '\+\ze[\u0009]'
+" whitespace characters except tab (\u0009). Vim's '\s' class only includes ASCII spaces and tabs.
+let s:whitespace_chars='\u0020\u00a0\u1680\u180e\u2000-\u200b\u202f\u205f\u3000\ufeff'
+let s:eol_whitespace_pattern = '[\u0009' . s:whitespace_chars . ']\+$'
+
+call s:InitVariable('g:better_whitespace_skip_empty_lines', 0)
+if g:better_whitespace_skip_empty_lines == 1
+    let s:eol_whitespace_pattern = '[^\u0009' . s:whitespace_chars . ']\@1<=' . s:eol_whitespace_pattern
+endif
+
+let s:strip_whitespace_pattern = s:eol_whitespace_pattern
+if g:show_spaces_that_precede_tabs == 1
+    let s:eol_whitespace_pattern .= '\|[' . s:whitespace_chars . ']\+\ze[\u0009]'
 endif
 
 " Only init once
@@ -129,12 +143,12 @@ function! s:CurrentLineWhitespaceOff( level )
             let g:current_line_whitespace_disabled_hard = 1
             let g:current_line_whitespace_disabled_soft = 0
             call s:InAllWindows('syn clear ExtraWhitespace | match ExtraWhitespace "' . s:eol_whitespace_pattern . '"')
-            call <SID>Echo("Current Line Hightlight Off (hard)")
+            call <SID>Echo("Current Line Highlight Off (hard)")
         elseif a:level == 'soft'
             let g:current_line_whitespace_disabled_soft = 1
             let g:current_line_whitespace_disabled_hard = 0
             call s:InAllWindows("match ExtraWhitespace ''")
-            call <SID>Echo("Current Line Hightlight Off (soft)")
+            call <SID>Echo("Current Line Highlight Off (soft)")
         endif
         " Re-run auto commands with the new settings
         call <SID>SetupAutoCommands()
@@ -148,7 +162,7 @@ function! s:CurrentLineWhitespaceOn()
         let g:current_line_whitespace_disabled_soft = 0
         call <SID>SetupAutoCommands()
         call s:InAllWindows('syn clear ExtraWhitespace | match ExtraWhitespace "' . s:eol_whitespace_pattern . '"')
-        call <SID>Echo("Current Line Hightlight On")
+        call <SID>Echo("Current Line Highlight On")
     endif
 endfunction
 
@@ -160,30 +174,84 @@ function! s:StripWhitespace( line1, line2 )
     let c = col(".")
 
     " Strip the whitespace
-    silent! execute ':' . a:line1 . ',' . a:line2 . 's/' . s:eol_whitespace_pattern . '//e'
+    silent! execute ':' . a:line1 . ',' . a:line2 . 's/' . s:strip_whitespace_pattern . '//e'
+
+    " Strip empty lines at EOF
+    if g:strip_whitelines_at_eof == 1
+        if &ff == 'dos'
+            let nl='\r\n'
+        elseif &ff == 'max'
+            let nl='\r'
+        else " unix
+            let nl='\n'
+        endif
+        silent! execute '%s/\('.nl.'\)\+\%$//'
+    endif
 
     " Restore the saved search and cursor position
     let @/=_s
     call cursor(l, c)
 endfunction
 
+" Search for trailing whitespace
+function! s:GotoTrailingWhitespace(search_backwards, from, to)
+    " Save the current search
+    let _s=@/
+    let l = line('.')
+    let c = col('.')
+
+    " Move to start of range (if we are outside of it)
+    if l < a:from || l > a:to
+        if a:search_backwards != 0
+            call cursor(a:to, 0)
+            call cursor(0, col('$'))
+        else
+            call cursor(a:from, 1)
+        endif
+    endif
+
+    " Set options (search direction, last searched line)
+    let opts = 'wz'
+    let until = a:to
+    if a:search_backwards != 0
+        let opts .= 'b'
+        let until = a:from
+    endif
+    " Full file, allow wrapping
+    if a:from == 1 && a:to == line('$')
+        let until = 0
+    endif
+
+    " Go to pattern
+    let found = search(s:eol_whitespace_pattern, opts, until)
+
+    " Restore position if there is no match (in case we moved it)
+    if found == 0
+        call cursor(l, c)
+    endif
+
+    " Restore the saved search
+    let @/=_s
+endfunction
+
 " Strip whitespace on file save
 function! s:EnableStripWhitespaceOnSave()
-    let g:strip_whitespace_on_save = 1
+    let b:strip_whitespace_on_save = 1
     call <SID>Echo("Strip Whitespace On Save: Enabled")
     call <SID>SetupAutoCommands()
 endfunction
 
 " Don't strip whitespace on file save
 function! s:DisableStripWhitespaceOnSave()
-    let g:strip_whitespace_on_save = 0
+    let b:strip_whitespace_on_save = 0
     call <SID>Echo("Strip Whitespace On Save: Disabled")
     call <SID>SetupAutoCommands()
 endfunction
 
 " Strips whitespace on file save
 function! s:ToggleStripWhitespaceOnSave()
-    if g:strip_whitespace_on_save == 1
+    call <SID>ShouldSkipHighlight()
+    if b:strip_whitespace_on_save == 1
         call <SID>DisableStripWhitespaceOnSave()
     else
         call <SID>EnableStripWhitespaceOnSave()
@@ -192,7 +260,12 @@ endfunction
 
 " Determines if whitespace highlighting should currently be skipped
 function! s:ShouldSkipHighlight()
-    return &buftype == 'nofile' || index(g:better_whitespace_filetypes_blacklist, &ft) >= 0
+    if !exists('b:better_whitespace_enabled')
+        let b:better_whitespace_enabled = &buftype != 'nofile' && index(g:better_whitespace_filetypes_blacklist, &ft) == -1
+    endif
+    if !exists('b:strip_whitespace_on_save')
+        let b:strip_whitespace_on_save = b:better_whitespace_enabled && g:strip_whitespace_on_save
+    endif
 endfunction
 
 " Run :StripWhitespace to remove end of line whitespace
@@ -214,14 +287,31 @@ command! ToggleWhitespace call <SID>ToggleWhitespace()
 command! -nargs=* CurrentLineWhitespaceOff call <SID>CurrentLineWhitespaceOff( <f-args> )
 " Run :CurrentLineWhitespaceOn to turn on whitespace for the current line
 command! CurrentLineWhitespaceOn call <SID>CurrentLineWhitespaceOn()
+" Search for trailing white space forwards or backwards
+command! -range=% NextTrailingWhitespace call <SID>GotoTrailingWhitespace(0, <line1>, <line2>)
+command! -range=% PrevTrailingWhitespace call <SID>GotoTrailingWhitespace(1, <line1>, <line2>)
+
+if !empty('g:better_whitespace_operator')
+    function! s:StripWhitespaceMotion(type)
+        call <SID>StripWhitespace(line("'["), line("']"))
+    endfunction
+
+    " Visual mode
+    exe "xmap <silent> ".g:better_whitespace_operator." :StripWhitespace<CR>"
+    " Normal mode (+ space, with line count)
+    exe "nmap <silent> ".g:better_whitespace_operator."<space> :<C-U>exe '.,+'.v:count' StripWhitespace'<CR>"
+    " Other motions
+    exe "nmap <silent> ".g:better_whitespace_operator."        :<C-U>set opfunc=<SID>StripWhitespaceMotion<CR>g@"
+endif
+
 
 " Process auto commands upon load, update local enabled on filetype change
-autocmd FileType * let b:better_whitespace_enabled = !<SID>ShouldSkipHighlight() | call <SID>SetupAutoCommands()
+autocmd FileType * call <SID>ShouldSkipHighlight() | call <SID>SetupAutoCommands()
 autocmd WinEnter,BufWinEnter * call <SID>SetupAutoCommands()
 autocmd ColorScheme * call <SID>WhitespaceInit()
 
 function! s:PerformMatchHighlight(pattern)
-    call s:InitVariable('b:better_whitespace_enabled', !<SID>ShouldSkipHighlight())
+    call <SID>ShouldSkipHighlight()
     if b:better_whitespace_enabled == 1
         exe 'match ExtraWhitespace "' . a:pattern . '"'
     else
@@ -231,7 +321,7 @@ endfunction
 
 function! s:PerformSyntaxHighlight(pattern)
     syn clear ExtraWhitespace
-    call s:InitVariable('b:better_whitespace_enabled', !<SID>ShouldSkipHighlight())
+    call <SID>ShouldSkipHighlight()
     if b:better_whitespace_enabled == 1
         exe 'syn match ExtraWhitespace excludenl "' . a:pattern . '"'
     endif
@@ -270,7 +360,7 @@ function! <SID>SetupAutoCommands()
             if g:current_line_whitespace_disabled_soft == 0
                 " Highlight all whitespace upon entering buffer
                 call <SID>PerformMatchHighlight(s:eol_whitespace_pattern)
-                " Check if current line highglighting is disabled
+                " Check if current line highlighting is disabled
                 if g:current_line_whitespace_disabled_hard == 1
                     " Never highlight whitespace on current line
                     autocmd InsertEnter,CursorMoved,CursorMovedI * call <SID>HighlightEOLWhitespaceExceptCurrentLine('match')
@@ -291,11 +381,10 @@ function! <SID>SetupAutoCommands()
             endif
         endif
 
-        " Strip whitespace on save if enabled
-        if g:strip_whitespace_on_save == 1
+        " Strip whitespace on save if enabled.
+        if (exists('b:strip_whitespace_on_save') ? b:strip_whitespace_on_save : g:strip_whitespace_on_save) == 1
             autocmd BufWritePre * call <SID>StripWhitespace( 0, line("$") )
         endif
 
     augroup END
 endfunction
-
