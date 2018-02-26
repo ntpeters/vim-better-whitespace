@@ -78,8 +78,8 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     the file that it cleans, either give it a range or select a group of lines
     in visual mode and then execute it.
 
-    *  There is an operator (defaulting to `<space>`) to clean whitespace.
-        For example, in normal mode, `<space>ip` will remove trailing whitespace from the
+    *  There is an operator (defaulting to `<leader>s`) to clean whitespace.
+        For example, in normal mode, `<leader>sip` will remove trailing whitespace from the
         current paragraph.
 
         You can change the operator it, for example to set it to _s, using:
@@ -88,6 +88,9 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
         ```
         Now `<number>_s<space>` strips whitespace on \<number\> lines, and `_s<motion>` on the
         lines affected by the motion given. Set to the empty string to deactivate the operator.
+
+        Note: This operator will not be mapped if an existing, user-defined
+        mapping is detected for the provided operator value.
 
 *  To enable/disable stripping of extra whitespace on file save for a buffer, call one of:
     ```vim
