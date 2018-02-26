@@ -16,7 +16,7 @@ function! s:InitVariable(var, value)
 endfunction
 
 " Operator for StripWhitespace (empty to disable)
-call s:InitVariable('g:better_whitespace_operator', '<space>')
+call s:InitVariable('g:better_whitespace_operator', '<leader>s')
 
 " Set this to enable/disable whitespace highlighting
 call s:InitVariable('g:better_whitespace_enabled', 1)
@@ -296,14 +296,24 @@ if !empty(g:better_whitespace_operator)
         call <SID>StripWhitespace(line("'["), line("']"))
     endfunction
 
-    " Visual mode
-    exe "xmap <silent> ".g:better_whitespace_operator." :StripWhitespace<CR>"
-    " Normal mode (+ space, with line count)
-    exe "nmap <silent> ".g:better_whitespace_operator."<space> :<C-U>exe '.,+'.v:count' StripWhitespace'<CR>"
-    " Other motions
-    exe "nmap <silent> ".g:better_whitespace_operator."        :<C-U>set opfunc=<SID>StripWhitespaceMotion<CR>g@"
-endif
+    " Ensure we only map if no identical, user-defined mapping already exists
+    if (empty(mapcheck(g:better_whitespace_operator, 'x')))
+        " Visual mode
+        exe "xmap <silent> ".g:better_whitespace_operator." :StripWhitespace<CR>"
+    else
+        call <SID>Echo("Whitespace operator not mapped for visual mode. Mapping already exists.")
+    endif
 
+    " Ensure we only map if no identical, user-defined mapping already exists
+    if (empty(mapcheck(g:better_whitespace_operator, 'n')))
+        " Normal mode (+ space, with line count)
+        exe "nmap <silent> ".g:better_whitespace_operator."<space> :<C-U>exe '.,+'.v:count' StripWhitespace'<CR>"
+        " Other motions
+        exe "nmap <silent> ".g:better_whitespace_operator."        :<C-U>set opfunc=<SID>StripWhitespaceMotion<CR>g@"
+    else
+        call <SID>Echo("Whitespace operator not mapped for normal mode. Mapping already exists.")
+    endif
+endif
 
 " Process auto commands upon load, update local enabled on filetype change
 autocmd FileType * call <SID>ShouldSkipHighlight() | call <SID>SetupAutoCommands()
