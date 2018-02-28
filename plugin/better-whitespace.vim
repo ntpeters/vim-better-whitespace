@@ -104,7 +104,7 @@ endfunction
 
 " Enable the whitespace highlighting
 function! s:EnableWhitespace()
-    if b:better_whitespace_enabled == 0
+    if b:better_whitespace_enabled != 1
         let b:better_whitespace_enabled = 1
         call <SID>WhitespaceInit()
         call <SID>SetupAutoCommands()
@@ -114,7 +114,7 @@ endfunction
 
 " Disable the whitespace highlighting
 function! s:DisableWhitespace()
-    if b:better_whitespace_enabled == 1
+    if b:better_whitespace_enabled != 0
         let b:better_whitespace_enabled = 0
         call <SID>SetupAutoCommands()
         call <SID>Echo("Whitespace Highlighting: Disabled")
@@ -123,7 +123,8 @@ endfunction
 
 " Toggle whitespace highlighting on/off
 function! s:ToggleWhitespace()
-    if b:better_whitespace_enabled == 1
+    call <SID>Echo("Whitespace Highlighting: Toggling...")
+    if <SID>:ShouldHighlight()
         call <SID>DisableWhitespace()
     else
         call <SID>EnableWhitespace()
@@ -250,8 +251,8 @@ endfunction
 
 " Strips whitespace on file save
 function! s:ToggleStripWhitespaceOnSave()
-    call <SID>ShouldSkipHighlight()
-    if b:strip_whitespace_on_save == 1
+    call <SID>Echo("Strip Whitespace On Save: Toggling...")
+    if <SID>ShouldStripWhitespace()
         call <SID>DisableStripWhitespaceOnSave()
     else
         call <SID>EnableStripWhitespaceOnSave()
@@ -259,13 +260,31 @@ function! s:ToggleStripWhitespaceOnSave()
 endfunction
 
 " Determines if whitespace highlighting should currently be skipped
-function! s:ShouldSkipHighlight()
-    if !exists('b:better_whitespace_enabled')
-        let b:better_whitespace_enabled = &buftype != 'nofile' && index(g:better_whitespace_filetypes_blacklist, &ft) == -1
+function! s:ShouldHighlight()
+    call s:InitVariable('b:better_whitespace_enabled', -1)
+    if b:better_whitespace_enabled < 0
+        if empty(&buftype) && empty(&filetype)
+            " We can't initialize buffer value properly yet, fall back to global one
+            return g:better_whitespace_enabled
+        else
+            let b:better_whitespace_enabled = &buftype != 'nofile' &&
+                        \ index(g:better_whitespace_filetypes_blacklist, &ft) == -1
+        endif
     endif
-    if !exists('b:strip_whitespace_on_save')
-        let b:strip_whitespace_on_save = b:better_whitespace_enabled && g:strip_whitespace_on_save
+    return b:better_whitespace_enabled
+endfunction
+
+function! s:ShouldStripWhitespace()
+    call s:InitVariable('b:strip_whitespace_on_save', -1)
+    if b:strip_whitespace_on_save < 0
+        if b:better_whitespace_enabled < 0
+            " We can't initialize buffer value properly yet, fall back to global one
+            return g:strip_whitespace_on_save
+        else
+            let b:strip_whitespace_on_save = b:better_whitespace_enabled && g:strip_whitespace_on_save
+        endif
     endif
+    return b:strip_whitespace_on_save
 endfunction
 
 " Run :StripWhitespace to remove end of line whitespace
@@ -316,13 +335,12 @@ if !empty(g:better_whitespace_operator)
 endif
 
 " Process auto commands upon load, update local enabled on filetype change
-autocmd FileType * call <SID>ShouldSkipHighlight() | call <SID>SetupAutoCommands()
+autocmd FileType * call <SID>ShouldHighlight() | call <SID>SetupAutoCommands()
 autocmd WinEnter,BufWinEnter * call <SID>SetupAutoCommands()
 autocmd ColorScheme * call <SID>WhitespaceInit()
 
 function! s:PerformMatchHighlight(pattern)
-    call <SID>ShouldSkipHighlight()
-    if b:better_whitespace_enabled == 1
+    if <SID>ShouldHighlight()
         exe 'match ExtraWhitespace "' . a:pattern . '"'
     else
         match ExtraWhitespace ''
@@ -331,8 +349,7 @@ endfunction
 
 function! s:PerformSyntaxHighlight(pattern)
     syn clear ExtraWhitespace
-    call <SID>ShouldSkipHighlight()
-    if b:better_whitespace_enabled == 1
+    if <SID>ShouldHighlight()
         exe 'syn match ExtraWhitespace excludenl "' . a:pattern . '"'
     endif
 endfunction
@@ -392,7 +409,7 @@ function! <SID>SetupAutoCommands()
         endif
 
         " Strip whitespace on save if enabled.
-        if (exists('b:strip_whitespace_on_save') ? b:strip_whitespace_on_save : g:strip_whitespace_on_save) == 1
+        if <SID>ShouldStripWhitespace()
             autocmd BufWritePre * call <SID>StripWhitespace( 0, line("$") )
         endif
 
