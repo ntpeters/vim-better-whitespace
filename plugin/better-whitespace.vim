@@ -124,7 +124,7 @@ endfunction
 " Toggle whitespace highlighting on/off
 function! s:ToggleWhitespace()
     call <SID>Echo("Whitespace Highlighting: Toggling...")
-    if <SID>:ShouldHighlight()
+    if <SID>ShouldHighlight()
         call <SID>DisableWhitespace()
     else
         call <SID>EnableWhitespace()
