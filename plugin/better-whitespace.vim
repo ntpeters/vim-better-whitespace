@@ -336,7 +336,7 @@ endif
 
 " Process auto commands upon load, update local enabled on filetype change
 autocmd FileType * call <SID>ShouldHighlight() | call <SID>SetupAutoCommands()
-autocmd WinEnter,BufWinEnter * call <SID>SetupAutoCommands()
+autocmd WinEnter,BufWinEnter * call <SID>ShouldHighlight() | call <SID>SetupAutoCommands()
 autocmd ColorScheme * call <SID>WhitespaceInit()
 
 function! s:PerformMatchHighlight(pattern)
