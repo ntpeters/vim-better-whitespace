@@ -104,21 +104,16 @@ endfunction
 
 " Enable the whitespace highlighting
 function! s:EnableWhitespace()
-    if b:better_whitespace_enabled != 1
-        let b:better_whitespace_enabled = 1
-        call <SID>WhitespaceInit()
-        call <SID>SetupAutoCommands()
-        call <SID>Echo("Whitespace Highlighting: Enabled")
-    endif
+    let b:better_whitespace_enabled = 1
+    call <SID>Echo("Whitespace Highlighting: Enabled")
+    call <SID>SetupAutoCommands()
 endfunction
 
 " Disable the whitespace highlighting
 function! s:DisableWhitespace()
-    if b:better_whitespace_enabled != 0
-        let b:better_whitespace_enabled = 0
-        call <SID>SetupAutoCommands()
-        call <SID>Echo("Whitespace Highlighting: Disabled")
-    endif
+    let b:better_whitespace_enabled = 0
+    call <SID>Echo("Whitespace Highlighting: Disabled")
+    call <SID>SetupAutoCommands()
 endfunction
 
 " Toggle whitespace highlighting on/off
@@ -277,7 +272,7 @@ endfunction
 function! s:ShouldStripWhitespace()
     call s:InitVariable('b:strip_whitespace_on_save', -1)
     if b:strip_whitespace_on_save < 0
-        if b:better_whitespace_enabled < 0
+        if !exists('b:better_whitespace_enabled') || b:better_whitespace_enabled < 0
             " We can't initialize buffer value properly yet, fall back to global one
             return g:strip_whitespace_on_save
         else
