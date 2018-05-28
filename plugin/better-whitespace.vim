@@ -15,6 +15,10 @@ function! s:InitVariable(var, value)
     endif
 endfunction
 
+" Set the highlight color for trailing whitespaces
+call s:InitVariable('g:better_whitespace_ctermcolor', 'red')
+call s:InitVariable('g:better_whitespace_guicolor', '#FF0000')
+
 " Operator for StripWhitespace (empty to disable)
 call s:InitVariable('g:better_whitespace_operator', '<leader>s')
 
@@ -90,7 +94,7 @@ endfunction
 function! s:WhitespaceInit()
     " Check if the user has already defined highlighting for this group
     if hlexists("ExtraWhitespace") == 0 || synIDattr(synIDtrans(hlID("ExtraWhitespace")), "bg") == -1
-        highlight ExtraWhitespace ctermbg = red guibg = #FF0000
+        execute 'highlight ExtraWhitespace ctermbg = '.g:better_whitespace_ctermcolor. ' guibg = '.g:better_whitespace_guicolor
     endif
     let s:better_whitespace_initialized = 1
 endfunction

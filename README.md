@@ -34,6 +34,16 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     ```vim
     highlight ExtraWhitespace ctermbg=<desired_color>
     ```
+   or
+
+    ```vim
+    let g:better_whitespace_ctermcolor='<desired_color>'
+    ```
+   Similarly, to set gui color:
+
+    ```vim
+    let g:better_whitespace_guicolor='<desired_color>'
+    ```
 
 *  To enable highlighting and stripping whitespace on save by default, use respectively
     ```vim
