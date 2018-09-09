@@ -186,6 +186,7 @@ function! s:StripWhitespace( line1, line2 )
             let nl='\n'
         endif
         silent! execute '%s/\('.nl.'\)\+\%$//'
+        silent! normal Go
     endif
 
     " Restore the saved search and cursor position
