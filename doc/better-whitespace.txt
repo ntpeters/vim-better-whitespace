@@ -56,7 +56,7 @@ this option.
 Call :CurrentLineWhitespaceOn to enable whitespace highlighting for the current
 line. Highlighting is still disabled for the current line while in insert mode.
 
-                                                *operator*
+                                                *better-whitespace-operator*
 By default, an operator is provided mapped to: <leader>s.
 To modify the key mapping for this operator, set g:better_whitespace_operator.
 This operator will strip whitespace over the currently selected region in visual
