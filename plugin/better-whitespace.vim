@@ -15,6 +15,9 @@ function! s:InitVariable(var, value)
     endif
 endfunction
 
+" Default enable strip on large file
+call s:InitVariable('g:not_strip_on_large_file', 0)
+
 " Set the highlight color for trailing whitespaces
 call s:InitVariable('g:better_whitespace_ctermcolor', 'red')
 call s:InitVariable('g:better_whitespace_guicolor', '#FF0000')
@@ -167,8 +170,16 @@ function! s:CurrentLineWhitespaceOn()
 endfunction
 
 " Removes all extraneous whitespace in the file
-function! s:StripWhitespace( line1, line2 )
+function! s:StripWhitespace( line1, line2, ... )
     " Save the current search and cursor position
+    let total_lines = line('$')
+    let manual_invoke = get(a:, 1, 0)
+
+    if g:strip_whitespace_on_save==1 && g:not_strip_on_large_file !=0 && total_lines > g:not_strip_on_large_file && manual_invoke !=1
+      echohl WarningMsg | echom "Not strip file over lines > ".g:not_strip_on_large_file . " current is: " .total_lines | echohl None
+      return
+    endif
+
     let _s=@/
     let l = line(".")
     let c = col(".")
@@ -287,7 +298,7 @@ function! s:ShouldStripWhitespace()
 endfunction
 
 " Run :StripWhitespace to remove end of line whitespace
-command! -range=% StripWhitespace call <SID>StripWhitespace( <line1>, <line2> )
+command! -range=% StripWhitespace call <SID>StripWhitespace( <line1>, <line2>, 1)
 " Run :EnableStripWhitespaceOnSave to enable whitespace stripping on save
 command! EnableStripWhitespaceOnSave call <SID>EnableStripWhitespaceOnSave()
 " Run :DisableStripWhitespaceOnSave to disable whitespace stripping on save

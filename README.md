@@ -118,6 +118,15 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
 
         For exceptions of all see ```g:better_whitespace_filetypes_blacklist```.
 
+    * If you have a file more than thousands of lines, stripping when saving will be relatively slow:
+
+      ```vim
+      let g:not_strip_on_large_file = 2333
+      ```
+      - when g:not_strip_on_large_file is 0, the behavior is disabled; when g:not_strip_on_large_file is 2333, the file over 2333 lines will not be stript.
+
+      - the command :StripWhitespace ignores this variable.
+
     *  If you would prefer to only strip whitespace for certain filetypes, add
         the following to your `~/.vimrc`:
 
