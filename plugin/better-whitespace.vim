@@ -376,7 +376,7 @@ function! <SID>SetupAutoCommands()
     augroup better_whitespace
         autocmd!
 
-        if g:better_whitespace_enabled == 1
+        if get(b:, 'better_whitespace_enabled', g:better_whitespace_enabled) == 1
             if s:better_whitespace_initialized == 0
                 call <SID>WhitespaceInit()
             endif
