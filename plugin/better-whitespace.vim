@@ -266,7 +266,7 @@ function! s:ShouldHighlight()
             " We can't initialize buffer value properly yet, fall back to global one
             return g:better_whitespace_enabled
         else
-            let b:better_whitespace_enabled = &buftype != 'nofile' &&
+            let b:better_whitespace_enabled = g:better_whitespace_enabled == 1 && &buftype != 'nofile' &&
                         \ index(g:better_whitespace_filetypes_blacklist, &ft) == -1
         endif
     endif
