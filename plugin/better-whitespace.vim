@@ -79,7 +79,7 @@ let s:better_whitespace_initialized = 0
 " Ensure the 'ExtraWhitespace' highlight group has been defined
 function! s:WhitespaceInit()
     " Check if the user has already defined highlighting for this group
-    if hlexists('ExtraWhitespace') == 0 || synIDattr(synIDtrans(hlID('ExtraWhitespace')), 'bg') == -1
+    if hlexists('ExtraWhitespace') == 0 || empty(synIDattr(synIDtrans(hlID('ExtraWhitespace')), 'bg'))
         execute 'highlight ExtraWhitespace ctermbg = '.g:better_whitespace_ctermcolor. ' guibg = '.g:better_whitespace_guicolor
     endif
     let s:better_whitespace_initialized = 1
