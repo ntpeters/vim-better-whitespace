@@ -7,58 +7,63 @@ if exists('g:loaded_better_whitespace_plugin')
 endif
 let g:loaded_better_whitespace_plugin = 1
 
-" Initializes a given variable to a given value. The variable is only
-" initialized if it does not exist prior.
-function! s:InitVariable(var, value)
-    if !exists(a:var)
-        execute 'let ' . a:var . ' = ' . string(a:value)
-    endif
-endfunction
 
+" Section: Preferences
+
+" Initializes a given global variable to a given value, if it does not yet exist.
+function! s:InitVariable(var, value)
+    let g:[a:var] = get(g:, a:var, a:value)
+endfunction
+"
 " Set the highlight color for trailing whitespaces
-call s:InitVariable('g:better_whitespace_ctermcolor', 'red')
-call s:InitVariable('g:better_whitespace_guicolor', '#FF0000')
+call s:InitVariable('better_whitespace_ctermcolor', 'red')
+call s:InitVariable('better_whitespace_guicolor', '#FF0000')
 
 " Operator for StripWhitespace (empty to disable)
-call s:InitVariable('g:better_whitespace_operator', '<leader>s')
+call s:InitVariable('better_whitespace_operator', '<leader>s')
 
 " Set this to enable/disable whitespace highlighting
-call s:InitVariable('g:better_whitespace_enabled', 1)
+call s:InitVariable('better_whitespace_enabled', 1)
 
 " Set this to match space characters that appear before or in-between tabs
-call s:InitVariable('g:show_spaces_that_precede_tabs', 0)
+call s:InitVariable('show_spaces_that_precede_tabs', 0)
 
 " Set this to disable highlighting on the current line in all modes
 " WARNING: This checks for current line on cursor move, which can significantly
 "          impact the performance of Vim (especially on large files)
-call s:InitVariable('g:current_line_whitespace_disabled_hard', 0)
+" WARNING: Ignored if g:current_line_whitespace_disabled_soft is set.
+call s:InitVariable('current_line_whitespace_disabled_hard', 0)
 
 " Set this to disable highlighting of the current line in all modes
 " This setting will not have the performance impact of the above, but
 " highlighting throughout the file may be overridden by other highlight
 " patterns with higher priority.
-call s:InitVariable('g:current_line_whitespace_disabled_soft', 0)
+call s:InitVariable('current_line_whitespace_disabled_soft', 0)
 
 " Set this to enable stripping whitespace on file save
-call s:InitVariable('g:strip_whitespace_on_save', 0)
+call s:InitVariable('strip_whitespace_on_save', 0)
 
 " Set this to enable stripping white lines at the end of the file when we
 " strip whitespace
-call s:InitVariable('g:strip_whitelines_at_eof', 0)
+call s:InitVariable('strip_whitelines_at_eof', 0)
 
 " Set this to blacklist specific filetypes
-let default_blacklist=['diff', 'gitcommit', 'unite', 'qf', 'help', 'markdown']
-call s:InitVariable('g:better_whitespace_filetypes_blacklist', default_blacklist)
+call s:InitVariable('better_whitespace_filetypes_blacklist', ['diff', 'gitcommit', 'unite', 'qf', 'help', 'markdown'])
+
+" Skip empty (whitespace-only) lines for highlighting
+call s:InitVariable('better_whitespace_skip_empty_lines', 0)
 
 " Disable verbosity by default
-call s:InitVariable('g:better_whitespace_verbosity', 0)
+call s:InitVariable('better_whitespace_verbosity', 0)
+
+
+" Section: Whitespace matching setup
 
 " Define custom whitespace character group to include all horizontal unicode
 " whitespace characters except tab (\u0009). Vim's '\s' class only includes ASCII spaces and tabs.
 let s:whitespace_chars='\u0020\u00a0\u1680\u180e\u2000-\u200b\u202f\u205f\u3000\ufeff'
 let s:eol_whitespace_pattern = '[\u0009' . s:whitespace_chars . ']\+$'
 
-call s:InitVariable('g:better_whitespace_skip_empty_lines', 0)
 if g:better_whitespace_skip_empty_lines == 1
     let s:eol_whitespace_pattern = '[^\u0009' . s:whitespace_chars . ']\@1<=' . s:eol_whitespace_pattern
 endif
@@ -71,103 +76,88 @@ endif
 " Only init once
 let s:better_whitespace_initialized = 0
 
-" Like windo but restore the current window.
-function! s:Windo(command)
-    let currwin=winnr()
-    execute 'windo ' . a:command
-    execute currwin . 'wincmd w'
-endfunction
-
-" Like tabdo but restore the current tab.
-function! s:Tabdo(command)
-    let currTab=tabpagenr()
-    execute 'tabdo ' . a:command
-    execute 'tabn ' . currTab
-endfunction
-
-" Execute command in all windows (across tabs).
-function! s:InAllWindows(command)
-    call s:Tabdo("call s:Windo('".substitute(a:command, "'", "''", 'g')."')")
-endfunction
-
 " Ensure the 'ExtraWhitespace' highlight group has been defined
 function! s:WhitespaceInit()
     " Check if the user has already defined highlighting for this group
-    if hlexists("ExtraWhitespace") == 0 || synIDattr(synIDtrans(hlID("ExtraWhitespace")), "bg") == -1
+    if hlexists('ExtraWhitespace') == 0 || synIDattr(synIDtrans(hlID('ExtraWhitespace')), 'bg') == -1
         execute 'highlight ExtraWhitespace ctermbg = '.g:better_whitespace_ctermcolor. ' guibg = '.g:better_whitespace_guicolor
     endif
     let s:better_whitespace_initialized = 1
 endfunction
 
-" Like 'echo', but only outputs the message when verbosity is enabled
-function! s:Echo(message)
-    if g:better_whitespace_verbosity == 1
-        echo a:message
+
+" Section: Actual work functions
+
+" query per-buffer setting for whitespace highlighting
+function! s:ShouldHighlight()
+    " Guess from the filetype if a) not locally decided, b) globally enabled, c) there is enough information
+    if !exists('b:better_whitespace_enabled') && g:better_whitespace_enabled == 1 && !(empty(&buftype) && empty(&filetype))
+        let b:better_whitespace_enabled = &buftype != 'nofile' && index(g:better_whitespace_filetypes_blacklist, &ft) == -1
     endif
+    return get(b:, 'better_whitespace_enabled', g:better_whitespace_enabled)
 endfunction
 
-" Enable the whitespace highlighting
-function! s:EnableWhitespace()
-    let b:better_whitespace_enabled = 1
-    call <SID>Echo("Whitespace Highlighting: Enabled")
-    call <SID>SetupAutoCommands()
-endfunction
-
-" Disable the whitespace highlighting
-function! s:DisableWhitespace()
-    let b:better_whitespace_enabled = 0
-    call <SID>Echo("Whitespace Highlighting: Disabled")
-    call <SID>SetupAutoCommands()
-endfunction
-
-" Toggle whitespace highlighting on/off
-function! s:ToggleWhitespace()
-    call <SID>Echo("Whitespace Highlighting: Toggling...")
-    if <SID>ShouldHighlight()
-        call <SID>DisableWhitespace()
-    else
-        call <SID>EnableWhitespace()
+" query per-buffer setting for whitespace stripping
+function! s:ShouldStripWhitespace()
+    " Guess from local whitespace enabled-ness and global whitespace setting
+    if !exists('b:strip_whitespace_on_save') && exists('b:better_whitespace_enabled')
+        let b:strip_whitespace_on_save = b:better_whitespace_enabled && g:strip_whitespace_on_save
     endif
+    return get(b:, 'strip_whitespace_on_save', g:strip_whitespace_on_save)
 endfunction
 
-" This disabled whitespace highlighting on the current line in all modes
-" Options:
-" hard - Disables highlighting for current line and maintains high priority
-"        highlighting for the entire file. Caution: may cause slowdown in Vim!
-" soft - No potential slowdown as with 'hard' option, but other highlighting
-"        rules of higher priority may overwrite these whitespace highlights.
-function! s:CurrentLineWhitespaceOff( level )
-    if g:better_whitespace_enabled == 1
-        " Set current line whitespace level
-        if a:level == 'hard'
-            let g:current_line_whitespace_disabled_hard = 1
-            let g:current_line_whitespace_disabled_soft = 0
-            call s:InAllWindows('syn clear ExtraWhitespace | match ExtraWhitespace "' . s:eol_whitespace_pattern . '"')
-            call <SID>Echo("Current Line Highlight Off (hard)")
-        elseif a:level == 'soft'
-            let g:current_line_whitespace_disabled_soft = 1
-            let g:current_line_whitespace_disabled_hard = 0
-            call s:InAllWindows("match ExtraWhitespace ''")
-            call <SID>Echo("Current Line Highlight Off (soft)")
+" Setup matching with either syntax or match
+if g:current_line_whitespace_disabled_soft == 1
+    " Match Whitespace on all lines
+    function! s:HighlightEOLWhitespace()
+        call <SID>ClearHighlighting()
+        if <SID>ShouldHighlight()
+            exe 'syn match ExtraWhitespace excludenl "' . s:eol_whitespace_pattern . '"'
         endif
-        " Re-run auto commands with the new settings
-        call <SID>SetupAutoCommands()
-    endif
-endfunction
+    endfunction
 
-" Enables whitespace highlighting for the current line
-function! s:CurrentLineWhitespaceOn()
-    if g:better_whitespace_enabled == 1
-        let g:current_line_whitespace_disabled_hard = 0
-        let g:current_line_whitespace_disabled_soft = 0
-        call <SID>SetupAutoCommands()
-        call s:InAllWindows('syn clear ExtraWhitespace | match ExtraWhitespace "' . s:eol_whitespace_pattern . '"')
-        call <SID>Echo("Current Line Highlight On")
-    endif
-endfunction
+    " Match Whitespace on all lines except the current one
+    function! s:HighlightEOLWhitespaceExceptCurrentLine()
+        call <SID>ClearHighlighting()
+        if <SID>ShouldHighlight()
+            exe 'syn match ExtraWhitespace excludenl "\%<' . line('.') .  'l' . s:eol_whitespace_pattern .
+                                                 \ '\|\%>' . line('.') .  'l' . s:eol_whitespace_pattern . '"'
+        endif
+    endfunction
+
+    " Remove Whitespace matching
+    function! s:ClearHighlighting()
+        syn clear ExtraWhitespace
+    endfunction
+else
+    " Match Whitespace on all lines
+    function! s:HighlightEOLWhitespace()
+        if <SID>ShouldHighlight()
+            exe 'match ExtraWhitespace "' . s:eol_whitespace_pattern . '"'
+        else
+            call <SID>ClearHighlighting()
+        endif
+    endfunction
+
+    " Match Whitespace on all lines except the current one
+    function! s:HighlightEOLWhitespaceExceptCurrentLine()
+        if <SID>ShouldHighlight()
+            exe 'match ExtraWhitespace "\%<' . line('.') .  'l' . s:eol_whitespace_pattern .
+                                   \ '\|\%>' . line('.') .  'l' . s:eol_whitespace_pattern . '"'
+        else
+            call <SID>ClearHighlighting()
+        endif
+    endfunction
+
+    " Remove Whitespace matching
+    function! s:ClearHighlighting()
+        match ExtraWhitespace ''
+    endfunction
+endif
+
 
 " Removes all extraneous whitespace in the file
-function! s:StripWhitespace( line1, line2 )
+function! s:StripWhitespace(line1, line2)
     " Save the current search and cursor position
     let _s=@/
     let l = line(".")
@@ -192,6 +182,12 @@ function! s:StripWhitespace( line1, line2 )
     let @/=_s
     call cursor(l, c)
 endfunction
+
+" Strip using motion lines
+function! s:StripWhitespaceMotion(...)
+    call <SID>StripWhitespace(line("'["), line("']"))
+endfunction
+
 
 " Search for trailing whitespace
 function! s:GotoTrailingWhitespace(search_backwards, from, to)
@@ -234,60 +230,92 @@ function! s:GotoTrailingWhitespace(search_backwards, from, to)
     let @/=_s
 endfunction
 
-" Strip whitespace on file save
+
+" Sets up (or removes) all auto commands in the buffer, after checking the
+" per-buffer settings. Also performs an initial highlighting (or clears it).
+function! <SID>SetupAutoCommands()
+    augroup better_whitespace
+        " Reset all auto commands in group
+        autocmd!
+
+        if <SID>ShouldHighlight()
+            if s:better_whitespace_initialized == 0
+                call <SID>WhitespaceInit()
+            endif
+
+            " Highlight extraneous whitespace at the end of lines, but not the current line in insert mode.
+            call <SID>HighlightEOLWhitespace()
+            autocmd CursorMovedI,InsertEnter * call <SID>HighlightEOLWhitespaceExceptCurrentLine()
+            autocmd InsertLeave,BufReadPost * call <SID>HighlightEOLWhitespace()
+
+            if g:current_line_whitespace_disabled_soft == 0
+                " Using syntax: clear whitespace highlighting when leaving buffer
+                autocmd BufWinLeave * call <SID>ClearHighlighting()
+
+                " Do not highlight whitespace on current line in insert mode
+                autocmd CursorMovedI * call <SID>HighlightEOLWhitespaceExceptCurrentLine()
+
+                " Do not highlight whitespace on current line in normal mode?
+                if g:current_line_whitespace_disabled_hard == 1
+                    autocmd CursorMoved * call <SID>HighlightEOLWhitespaceExceptCurrentLine()
+                endif
+            endif
+
+        elseif s:better_whitespace_initialized == 1
+            " Clear highlighting if it disabled, as it might have just been toggled
+            call <SID>ClearHighlighting()
+        endif
+
+        " Strip whitespace on save if enabled.
+        if <SID>ShouldStripWhitespace()
+            autocmd BufWritePre * call <SID>StripWhitespace(0, line("$"))
+        endif
+
+    augroup END
+endfunction
+
+" Check & setup auto commands upon enter & load, and again on filetype change.
+autocmd FileType,WinEnter,BufWinEnter * call <SID>SetupAutoCommands()
+autocmd ColorScheme * call <SID>WhitespaceInit()
+
+
+" Section: Setting of per-buffer higlighting/stripping
+
+function! s:EnableWhitespace()
+    let b:better_whitespace_enabled = 1
+    call <SID>SetupAutoCommands()
+endfunction
+
+function! s:DisableWhitespace()
+    let b:better_whitespace_enabled = 0
+    call <SID>SetupAutoCommands()
+endfunction
+
+function! s:ToggleWhitespace()
+    let b:better_whitespace_enabled = 1 - <SID>ShouldHighlight()
+    call <SID>SetupAutoCommands()
+endfunction
+
 function! s:EnableStripWhitespaceOnSave()
     let b:strip_whitespace_on_save = 1
-    call <SID>Echo("Strip Whitespace On Save: Enabled")
     call <SID>SetupAutoCommands()
 endfunction
 
-" Don't strip whitespace on file save
 function! s:DisableStripWhitespaceOnSave()
     let b:strip_whitespace_on_save = 0
-    call <SID>Echo("Strip Whitespace On Save: Disabled")
     call <SID>SetupAutoCommands()
 endfunction
 
-" Strips whitespace on file save
 function! s:ToggleStripWhitespaceOnSave()
-    call <SID>Echo("Strip Whitespace On Save: Toggling...")
-    if <SID>ShouldStripWhitespace()
-        call <SID>DisableStripWhitespaceOnSave()
-    else
-        call <SID>EnableStripWhitespaceOnSave()
-    endif
+    let b:strip_whitespace_on_save = 1 - <SID>ShouldStripWhitespace()
+    call <SID>SetupAutoCommands()
 endfunction
 
-" Determines if whitespace highlighting should currently be skipped
-function! s:ShouldHighlight()
-    call s:InitVariable('b:better_whitespace_enabled', -1)
-    if b:better_whitespace_enabled < 0
-        if empty(&buftype) && empty(&filetype)
-            " We can't initialize buffer value properly yet, fall back to global one
-            return g:better_whitespace_enabled
-        else
-            let b:better_whitespace_enabled = g:better_whitespace_enabled == 1 && &buftype != 'nofile' &&
-                        \ index(g:better_whitespace_filetypes_blacklist, &ft) == -1
-        endif
-    endif
-    return b:better_whitespace_enabled
-endfunction
 
-function! s:ShouldStripWhitespace()
-    call s:InitVariable('b:strip_whitespace_on_save', -1)
-    if b:strip_whitespace_on_save < 0
-        if !exists('b:better_whitespace_enabled') || b:better_whitespace_enabled < 0
-            " We can't initialize buffer value properly yet, fall back to global one
-            return g:strip_whitespace_on_save
-        else
-            let b:strip_whitespace_on_save = b:better_whitespace_enabled && g:strip_whitespace_on_save
-        endif
-    endif
-    return b:strip_whitespace_on_save
-endfunction
+" Section: Public commands and mappings
 
 " Run :StripWhitespace to remove end of line whitespace
-command! -range=% StripWhitespace call <SID>StripWhitespace( <line1>, <line2> )
+command! -range=% StripWhitespace call <SID>StripWhitespace(<line1>, <line2>)
 " Run :EnableStripWhitespaceOnSave to enable whitespace stripping on save
 command! EnableStripWhitespaceOnSave call <SID>EnableStripWhitespaceOnSave()
 " Run :DisableStripWhitespaceOnSave to disable whitespace stripping on save
@@ -300,117 +328,29 @@ command! EnableWhitespace call <SID>EnableWhitespace()
 command! DisableWhitespace call <SID>DisableWhitespace()
 " Run :ToggleWhitespace to toggle whitespace highlighting on/off
 command! ToggleWhitespace call <SID>ToggleWhitespace()
-" Run :CurrentLineWhitespaceOff(level) to disable highlighting for the current
-" line. Levels are: 'hard' and 'soft'
-command! -nargs=* CurrentLineWhitespaceOff call <SID>CurrentLineWhitespaceOff( <f-args> )
-" Run :CurrentLineWhitespaceOn to turn on whitespace for the current line
-command! CurrentLineWhitespaceOn call <SID>CurrentLineWhitespaceOn()
-" Search for trailing white space forwards or backwards
+" Search for trailing white space forwards
 command! -range=% NextTrailingWhitespace call <SID>GotoTrailingWhitespace(0, <line1>, <line2>)
+" Search for trailing white space backwards
 command! -range=% PrevTrailingWhitespace call <SID>GotoTrailingWhitespace(1, <line1>, <line2>)
 
 if !empty(g:better_whitespace_operator)
-    function! s:StripWhitespaceMotion(type)
-        call <SID>StripWhitespace(line("'["), line("']"))
-    endfunction
-
     " Ensure we only map if no identical, user-defined mapping already exists
     if (empty(mapcheck(g:better_whitespace_operator, 'x')))
         " Visual mode
-        exe "xmap <silent> ".g:better_whitespace_operator." :StripWhitespace<CR>"
-    else
-        call <SID>Echo("Whitespace operator not mapped for visual mode. Mapping already exists.")
+        exe 'xmap <silent> '.g:better_whitespace_operator.' :StripWhitespace<CR>'
     endif
 
     " Ensure we only map if no identical, user-defined mapping already exists
     if (empty(mapcheck(g:better_whitespace_operator, 'n')))
         " Normal mode (+ space, with line count)
-        exe "nmap <silent> ".g:better_whitespace_operator."<space> :<C-U>exe '.,+'.v:count' StripWhitespace'<CR>"
+        exe 'nmap <silent> '.g:better_whitespace_operator.'<space> :<C-U>exe ".,+".v:count" StripWhitespace"<CR>'
         " Other motions
-        exe "nmap <silent> ".g:better_whitespace_operator."        :<C-U>set opfunc=<SID>StripWhitespaceMotion<CR>g@"
-    else
-        call <SID>Echo("Whitespace operator not mapped for normal mode. Mapping already exists.")
+        exe 'nmap <silent> '.g:better_whitespace_operator.'        :<C-U>set opfunc=<SID>StripWhitespaceMotion<CR>g@'
     endif
 endif
 
-" Process auto commands upon load, update local enabled on filetype change
-autocmd FileType * call <SID>ShouldHighlight() | call <SID>SetupAutoCommands()
-autocmd WinEnter,BufWinEnter * call <SID>ShouldHighlight() | call <SID>SetupAutoCommands()
-autocmd ColorScheme * call <SID>WhitespaceInit()
 
-function! s:PerformMatchHighlight(pattern)
-    if <SID>ShouldHighlight()
-        exe 'match ExtraWhitespace "' . a:pattern . '"'
-    else
-        match ExtraWhitespace ''
-    endif
-endfunction
-
-function! s:PerformSyntaxHighlight(pattern)
-    syn clear ExtraWhitespace
-    if <SID>ShouldHighlight()
-        exe 'syn match ExtraWhitespace excludenl "' . a:pattern . '"'
-    endif
-endfunction
-
-function! s:HighlightEOLWhitespace(type)
-    if (a:type == 'match')
-        call s:PerformMatchHighlight(s:eol_whitespace_pattern)
-    elseif (a:type == 'syntax')
-        call s:PerformSyntaxHighlight(s:eol_whitespace_pattern)
-    endif
-endfunction
-
-function! s:HighlightEOLWhitespaceExceptCurrentLine(type)
-    let a:exclude_current_line_eol_whitespace_pattern = '\%<' . line(".") .  'l' . s:eol_whitespace_pattern . '\|\%>' . line(".") .  'l' . s:eol_whitespace_pattern
-    if (a:type == 'match')
-        call s:PerformMatchHighlight(a:exclude_current_line_eol_whitespace_pattern)
-    elseif (a:type == 'syntax')
-        call s:PerformSyntaxHighlight(a:exclude_current_line_eol_whitespace_pattern)
-    endif
-endfunction
-
-" Executes all auto commands
-function! <SID>SetupAutoCommands()
-    " Auto commands group
-    augroup better_whitespace
-        autocmd!
-
-        if get(b:, 'better_whitespace_enabled', g:better_whitespace_enabled) == 1
-            if s:better_whitespace_initialized == 0
-                call <SID>WhitespaceInit()
-            endif
-
-
-            " Check if current line is disabled softly
-            if g:current_line_whitespace_disabled_soft == 0
-                " Highlight all whitespace upon entering buffer
-                call <SID>PerformMatchHighlight(s:eol_whitespace_pattern)
-                " Check if current line highlighting is disabled
-                if g:current_line_whitespace_disabled_hard == 1
-                    " Never highlight whitespace on current line
-                    autocmd InsertEnter,CursorMoved,CursorMovedI * call <SID>HighlightEOLWhitespaceExceptCurrentLine('match')
-                else
-                    " When in insert mode, do not highlight whitespace on the current line
-                    autocmd InsertEnter,CursorMovedI * call <SID>HighlightEOLWhitespaceExceptCurrentLine('match')
-                endif
-                " Highlight all whitespace when exiting insert mode
-                autocmd InsertLeave,BufReadPost * call <SID>HighlightEOLWhitespace('match')
-                " Clear whitespace highlighting when leaving buffer
-                autocmd BufWinLeave * match ExtraWhitespace ''
-            else
-                " Highlight extraneous whitespace at the end of lines, but not the
-                " current line.
-                call <SID>HighlightEOLWhitespace('syntax')
-                autocmd InsertEnter * call <SID>HighlightEOLWhitespaceExceptCurrentLine('syntax')
-                autocmd InsertLeave,BufReadPost * call <SID>HighlightEOLWhitespace('syntax')
-            endif
-        endif
-
-        " Strip whitespace on save if enabled.
-        if <SID>ShouldStripWhitespace()
-            autocmd BufWritePre * call <SID>StripWhitespace( 0, line("$") )
-        endif
-
-    augroup END
-endfunction
+" Deprecated legacy commands, set for compatiblity and to point users in the right direction.
+let s:errmsg='please set g:current_line_whitespace_disabled_{soft,hard} and reload better whitespace'
+command! -nargs=* CurrentLineWhitespaceOff echoerr 'Deprecated command CurrentLineWhitespaceOff: '.s:errmsg
+command! CurrentLineWhitespaceOn echoerr 'Deprecated command CurrentLineWhitespaceOn: '.s:errmsg
