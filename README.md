@@ -124,6 +124,13 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
         where `<desired_filetypes>` is a comma separated list of the file types you want
         to be stripped of whitespace on file save ( ie. `javascript,c,cpp,java,html,ruby` )
 
+    *  By default, you will be asked for confirmation before whitespace is
+       stripped when you save the file. This can be disabled by adding the
+       following to your `~/.vimrc`:
+       ```
+       let g:strip_whitespace_confirm=0
+       ```
+
 *  To disable this plugin for specific file types, add the following to your `~/.vimrc`:
     ```vim
     let g:better_whitespace_filetypes_blacklist=['<filetype1>', '<filetype2>', '<etc>']

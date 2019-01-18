@@ -47,6 +47,9 @@ call s:InitVariable('strip_whitespace_on_save', 0)
 " strip whitespace
 call s:InitVariable('strip_whitelines_at_eof', 0)
 
+" Set this to enable user confirmation before stripping whitespace on file save
+call s:InitVariable('strip_whitespace_confirm', 1)
+
 " Set this to blacklist specific filetypes
 call s:InitVariable('better_whitespace_filetypes_blacklist', ['diff', 'gitcommit', 'unite', 'qf', 'help', 'markdown'])
 
@@ -84,7 +87,6 @@ function! s:WhitespaceInit()
     endif
     let s:better_whitespace_initialized = 1
 endfunction
-
 
 " Section: Actual work functions
 
@@ -155,19 +157,24 @@ else
     endfunction
 endif
 
+" Checks for extraneous whitespace in the file
+" WARNING: moves the cursor.
+function! s:DetectWhitespace(line1, line2)
+    call cursor(a:line1, 1)
+    return search(s:strip_whitespace_pattern, 'n', a:line2)
+endfunction
 
 " Removes all extraneous whitespace in the file
 function! s:StripWhitespace(line1, line2)
     " Save the current search and cursor position
     let _s=@/
-    let l = line(".")
-    let c = col(".")
+    let l = line('.')
+    let c = col('.')
 
-    " Strip the whitespace
     silent! execute ':' . a:line1 . ',' . a:line2 . 's/' . s:strip_whitespace_pattern . '//e'
 
     " Strip empty lines at EOF
-    if g:strip_whitelines_at_eof == 1
+    if g:strip_whitelines_at_eof == 1 && a:line2 >= line('$')
         if &ff == 'dos'
             let nl='\r\n'
         elseif &ff == 'max'
@@ -186,6 +193,17 @@ endfunction
 " Strip using motion lines
 function! s:StripWhitespaceMotion(...)
     call <SID>StripWhitespace(line("'["), line("']"))
+endfunction
+
+" Strip after checking for confirmation
+function! s:StripWhitespaceOnSave(force)
+    let l = line('.')
+    let c = col('.')
+    if g:strip_whitespace_confirm == 0 || a:force == 1 ||
+        \ (<SID>DetectWhitespace(1, line('$')) && confirm('Whitespace found, delete it?', "&No\n&Yes", 1, 'Question') == 2)
+        call <SID>StripWhitespace(1, line('$'))
+    endif
+    call cursor(l, c)
 endfunction
 
 
@@ -268,7 +286,7 @@ function! <SID>SetupAutoCommands()
 
         " Strip whitespace on save if enabled.
         if <SID>ShouldStripWhitespace()
-            autocmd BufWritePre * call <SID>StripWhitespace(0, line("$"))
+            autocmd BufWritePre * call <SID>StripWhitespaceOnSave(v:cmdbang)
         endif
 
     augroup END
@@ -315,7 +333,7 @@ endfunction
 " Section: Public commands and mappings
 
 " Run :StripWhitespace to remove end of line whitespace
-command! -range=% StripWhitespace call <SID>StripWhitespace(<line1>, <line2>)
+command! -bang -range=% StripWhitespace call <SID>StripWhitespace(<line1>, <line2>)
 " Run :EnableStripWhitespaceOnSave to enable whitespace stripping on save
 command! EnableStripWhitespaceOnSave call <SID>EnableStripWhitespaceOnSave()
 " Run :DisableStripWhitespaceOnSave to disable whitespace stripping on save

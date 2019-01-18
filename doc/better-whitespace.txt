@@ -80,6 +80,10 @@ highlighting throughout the file may be overridden by other highlight
 patterns with higher priority.
 
 
+`g:strip_whitespace_confirm`                    (defaults to 1)
+Set to 0 to deactivate asking for confirmation before whitespace is
+stripped when you save the file.
+
 `g:show_spaces_that_precede_tabs`               (defaults to 0)
 Set this to match space characters that appear before or in-between tabs
 
