@@ -56,6 +56,9 @@ call s:InitVariable('better_whitespace_filetypes_blacklist', ['diff', 'gitcommit
 " Skip empty (whitespace-only) lines for highlighting
 call s:InitVariable('better_whitespace_skip_empty_lines', 0)
 
+" Skip stripping whitespace on lines that have not been modified
+call s:InitVariable('strip_only_modified_lines', 0)
+
 " Disable verbosity by default
 call s:InitVariable('better_whitespace_verbosity', 0)
 
@@ -87,6 +90,9 @@ function! s:WhitespaceInit()
     endif
     let s:better_whitespace_initialized = 1
 endfunction
+
+" Diff command returning a space-separated list of ranges of new/modified lines (as first,last or first,+num)
+let s:diff_cmd='diff -a --unchanged-group-format="" --old-group-format="" --new-group-format="%dF,%dL " --changed-group-format="%dF,%dL " '
 
 " Section: Actual work functions
 
@@ -195,15 +201,41 @@ function! s:StripWhitespaceMotion(...)
     call <SID>StripWhitespace(line("'["), line("']"))
 endfunction
 
+" Get the ranges of changed lines
+function! s:ChangedLines()
+    if empty(expand('%')) || g:strip_only_modified_lines == 0
+        return [[1,line('$')]]
+    endif
+    redir => l:better_whitespace_changes_list
+        silent! echo system(s:diff_cmd.' '.shellescape(expand('%')).' -', join(getline(1, line('$')), "\n"))
+    redir END
+    return map(split(trim(l:better_whitespace_changes_list), ' '), 'split(v:val, ",")')
+endfunction
+
 " Strip after checking for confirmation
 function! s:StripWhitespaceOnSave(force)
-    let l = line('.')
-    let c = col('.')
-    if g:strip_whitespace_confirm == 0 || a:force == 1 ||
-        \ (<SID>DetectWhitespace(1, line('$')) && confirm('Whitespace found, delete it?', "&No\n&Yes", 1, 'Question') == 2)
-        call <SID>StripWhitespace(1, line('$'))
+    let ranges = <SID>ChangedLines()
+
+    if g:strip_whitespace_confirm == 1 && a:force == 0
+        let l = line(".")
+        let c = col(".")
+        let found = 0
+        for r in ranges
+            if <SID>DetectWhitespace(r[0], r[1])
+                " found not just any whitespace, but whitespace that we are willing to strip
+                let found = confirm('Whitespace found, delete it?', "&No\n&Yes", 1, 'Question') == 2
+                break
+            endif
+        endfor
+        call cursor(l, c)
+        if found == 0
+            return
+        endif
     endif
-    call cursor(l, c)
+
+    for r in ranges
+        call <SID>StripWhitespace(r[0], r[1])
+    endfor
 endfunction
 
 

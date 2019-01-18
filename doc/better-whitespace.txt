@@ -38,6 +38,7 @@ of lines in visual mode and then execute it.
 :DisableStripWhitespaceOnSave                   *better-whitespace-:DisableStripWhitespaceOnSave*
 
 This enables/disables stripping of extra whitespace on file save.
+If `g:strip_only_modified_lines` is set to 1, only modified lines will be stripped.
 
 
 PREFERENCES                                     *better-whitespace-preferences*
@@ -50,6 +51,11 @@ Set this to enable whitespace highlighting by default, set to 0 to disable it.
 Disables better-whitespace by default on these file types.
 Overrides `g:better_whitespace_enabled`, and can be manually overriden with
 |better-whitespace-:EnableWhitespace| and related commands.
+
+If `g:strip_only_modified_lines`                 (defaults to 0)
+When stripping whitespace on save, only perform the stripping on the lines
+that have been modified.
+Uses `diff`, which should be available on all platforms (see |E810|).
 
 `g:better_whitespace_operator`                    *better-whitespace-operator*
 

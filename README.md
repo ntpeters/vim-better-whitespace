@@ -131,6 +131,13 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
        let g:strip_whitespace_confirm=0
        ```
 
+    *  By default, all the lines in the file will have their trailing whitespace stripped
+       when you save the file. This can be changed to only the modified lines, by adding
+       the following to your `~/.vimrc`:
+       ```
+       let g:strip_only_modified_lines=0
+       ```
+
 *  To disable this plugin for specific file types, add the following to your `~/.vimrc`:
     ```vim
     let g:better_whitespace_filetypes_blacklist=['<filetype1>', '<filetype2>', '<etc>']
