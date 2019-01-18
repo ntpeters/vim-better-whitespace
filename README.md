@@ -124,6 +124,15 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
         where `<desired_filetypes>` is a comma separated list of the file types you want
         to be stripped of whitespace on file save ( ie. `javascript,c,cpp,java,html,ruby` )
 
+    *  If you want to disable automatically stripping whitespace for large files, you can specify
+       a maximum number of lines (e.g. 1000) by adding the following to your `~/.vimrc`:
+
+       ```vim
+       let g:strip_disabled_on_large_files = 1000
+       ```
+
+       This overrides `let g:strip_whitespace_on_save` but not `:EnableStripWhitespaceOnSave`.
+
     *  By default, you will be asked for confirmation before whitespace is
        stripped when you save the file. This can be disabled by adding the
        following to your `~/.vimrc`:

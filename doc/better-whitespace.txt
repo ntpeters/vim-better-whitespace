@@ -33,8 +33,8 @@ Removes extra whitespace, by default on the entire file. To restrict the
 portion of the file that it cleans, either give it a range or select a group
 of lines in visual mode and then execute it.
 
-:ToggleWhitespaceOnSave                         *better-whitespace-:ToggleWhitespaceOnSave*
-:EnableWhitespaceOnSave                         *better-whitespace-:EnableWhitespaceOnSave*
+:ToggleStripWhitespaceOnSave                    *better-whitespace-:ToggleStripWhitespaceOnSave*
+:EnableStripWhitespaceOnSave                    *better-whitespace-:EnableStripWhitespaceOnSave*
 :DisableStripWhitespaceOnSave                   *better-whitespace-:DisableStripWhitespaceOnSave*
 
 This enables/disables stripping of extra whitespace on file save.
@@ -56,6 +56,11 @@ If `g:strip_only_modified_lines`                 (defaults to 0)
 When stripping whitespace on save, only perform the stripping on the lines
 that have been modified.
 Uses `diff`, which should be available on all platforms (see |E810|).
+
+`g:strip_disabled_on_large_files`                (defaults to 0)
+Skip stripping whitespace on files that have more lines than the value in this
+variable. 0 means disabled, thus strip for any file size.  This can be manually
+overriden with |better-whitespace-:EnableStripWhitespaceOnSave| and related commands.
 
 `g:better_whitespace_operator`                    *better-whitespace-operator*
 
