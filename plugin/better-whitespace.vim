@@ -207,7 +207,7 @@ endfunction
 
 " Get the ranges of changed lines
 function! s:ChangedLines()
-    if empty(expand('%')) || g:strip_only_modified_lines == 0
+    if !filereadable(expand('%')) || g:strip_only_modified_lines == 0
         return [[1,line('$')]]
     endif
     redir => l:better_whitespace_changes_list
