@@ -211,7 +211,7 @@ function! s:ChangedLines()
         return [[1,line('$')]]
     elseif &modified
         redir => l:better_whitespace_changes_list
-            silent! echo system(s:diff_cmd.' '.shellescape(expand('%')).' -', join(getline(1, line('$')), "\n"))
+            silent! echo system(s:diff_cmd.' '.shellescape(expand('%')).' -', join(getline(1, line('$')), "\n") . "\n")
         redir END
         return map(split(trim(l:better_whitespace_changes_list), ' '), 'split(v:val, ",")')
     endif
