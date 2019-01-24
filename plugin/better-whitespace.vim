@@ -109,10 +109,10 @@ function! s:ShouldHighlight()
 endfunction
 
 " query per-buffer setting for whitespace stripping
-function! s:ShouldStripWhitespace()
+function! s:ShouldStripWhitespaceOnSave()
     " Guess from local whitespace enabled-ness and global whitespace setting
     if !exists('b:strip_whitespace_on_save') && exists('b:better_whitespace_enabled')
-        let b:strip_whitespace_on_save = b:better_whitespace_enabled && g:strip_whitespace_on_save &&
+        let b:strip_whitespace_on_save = b:better_whitespace_enabled && g:strip_whitespace_on_save && &modifiable &&
                     \ (g:strip_disabled_on_large_files == 0 || g:strip_disabled_on_large_files >= line('$'))
     endif
     return get(b:, 'strip_whitespace_on_save', g:strip_whitespace_on_save)
@@ -209,11 +209,13 @@ endfunction
 function! s:ChangedLines()
     if !filereadable(expand('%')) || g:strip_only_modified_lines == 0
         return [[1,line('$')]]
+    elseif &modified
+        redir => l:better_whitespace_changes_list
+            silent! echo system(s:diff_cmd.' '.shellescape(expand('%')).' -', join(getline(1, line('$')), "\n"))
+        redir END
+        return map(split(trim(l:better_whitespace_changes_list), ' '), 'split(v:val, ",")')
     endif
-    redir => l:better_whitespace_changes_list
-        silent! echo system(s:diff_cmd.' '.shellescape(expand('%')).' -', join(getline(1, line('$')), "\n"))
-    redir END
-    return map(split(trim(l:better_whitespace_changes_list), ' '), 'split(v:val, ",")')
+    return []
 endfunction
 
 " Strip after checking for confirmation
@@ -321,7 +323,7 @@ function! <SID>SetupAutoCommands()
         endif
 
         " Strip whitespace on save if enabled.
-        if <SID>ShouldStripWhitespace()
+        if <SID>ShouldStripWhitespaceOnSave()
             autocmd BufWritePre * call <SID>StripWhitespaceOnSave(v:cmdbang)
         endif
 
@@ -361,7 +363,7 @@ function! s:DisableStripWhitespaceOnSave()
 endfunction
 
 function! s:ToggleStripWhitespaceOnSave()
-    let b:strip_whitespace_on_save = 1 - <SID>ShouldStripWhitespace()
+    let b:strip_whitespace_on_save = 1 - <SID>ShouldStripWhitespaceOnSave()
     call <SID>SetupAutoCommands()
 endfunction
 
