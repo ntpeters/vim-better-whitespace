@@ -67,7 +67,7 @@ overriden with |better-whitespace-:EnableStripWhitespaceOnSave| and related comm
 By default, an operator is provided mapped to: <leader>s.
 To modify the key mapping for this operator, set `g:better_whitespace_operator`.
 This operator will strip whitespace over the currently selected region in visual
-mode, or for the following motion in normal mode. Set an emprty value to disable.
+mode, or for the following motion in normal mode. Set an empty value to disable.
 
 Note: This operator will not be mapped if an existing, user-defined mapping is
 detected for the provided operator value.
