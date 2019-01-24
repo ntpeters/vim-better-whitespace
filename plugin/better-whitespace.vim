@@ -207,7 +207,7 @@ endfunction
 
 " Get the ranges of changed lines
 function! s:ChangedLines()
-    if !filereadable(expand('%')) || g:strip_only_modified_lines == 0
+    if !filereadable(expand('%'))
         return [[1,line('$')]]
     elseif &modified
         redir => l:better_whitespace_changes_list
@@ -220,7 +220,7 @@ endfunction
 
 " Strip after checking for confirmation
 function! s:StripWhitespaceOnSave(force)
-    let ranges = <SID>ChangedLines()
+    let ranges = g:strip_only_modified_lines ? <SID>ChangedLines() : [[1,line('$')]]
 
     if g:strip_whitespace_confirm == 1 && a:force == 0
         let l = line(".")
@@ -370,6 +370,8 @@ endfunction
 
 " Section: Public commands and mappings
 
+" Run :StripWhitespace to remove end of line whitespace *on changed lines*
+command! -bang -range=% StripWhitespaceOnChangedLines for r in <SID>ChangedLines() | call <SID>StripWhitespace(r[0], r[1]) | endfor
 " Run :StripWhitespace to remove end of line whitespace
 command! -bang -range=% StripWhitespace call <SID>StripWhitespace(<line1>, <line2>)
 " Run :EnableStripWhitespaceOnSave to enable whitespace stripping on save
