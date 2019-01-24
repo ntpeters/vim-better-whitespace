@@ -171,7 +171,7 @@ endif
 " WARNING: moves the cursor.
 function! s:DetectWhitespace(line1, line2)
     call cursor(a:line1, 1)
-    return search(s:strip_whitespace_pattern, 'n', a:line2)
+    return search(s:strip_whitespace_pattern, 'cn', a:line2)
 endfunction
 
 " Removes all extraneous whitespace in the file
