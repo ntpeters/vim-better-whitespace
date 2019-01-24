@@ -100,6 +100,7 @@ Set this to match space characters that appear before or in-between tabs
 
 `g:strip_whitespace_on_save`                      (defaults to 0)
 Set this to enable stripping whitespace on file save for files where
+better-whitespace is enabled.
 
 `g:strip_whitelines_at_eof`                       (defaults to 0)
 Set this to enable stripping white lines at the end of the file when we
