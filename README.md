@@ -128,10 +128,11 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
        a maximum number of lines (e.g. 1000) by adding the following to your `~/.vimrc`:
 
        ```vim
-       let g:strip_disabled_on_large_files = 1000
+       let g:strip_max_file_size = 1000
        ```
 
        This overrides `let g:strip_whitespace_on_save` but not `:EnableStripWhitespaceOnSave`.
+       Set to `0` to deactivate.
 
     *  By default, you will be asked for confirmation before whitespace is
        stripped when you save the file. This can be disabled by adding the

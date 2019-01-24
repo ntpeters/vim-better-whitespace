@@ -60,7 +60,7 @@ call s:InitVariable('better_whitespace_skip_empty_lines', 0)
 call s:InitVariable('strip_only_modified_lines', 0)
 
 " Skip stripping whitespace on files that have more lines than this variable
-call s:InitVariable('strip_disabled_on_large_files', 0)
+call s:InitVariable('strip_max_file_size', 1000)
 
 " Disable verbosity by default
 call s:InitVariable('better_whitespace_verbosity', 0)
@@ -113,7 +113,7 @@ function! s:ShouldStripWhitespaceOnSave()
     " Guess from local whitespace enabled-ness and global whitespace setting
     if !exists('b:strip_whitespace_on_save') && exists('b:better_whitespace_enabled')
         let b:strip_whitespace_on_save = b:better_whitespace_enabled && g:strip_whitespace_on_save && &modifiable &&
-                    \ (g:strip_disabled_on_large_files == 0 || g:strip_disabled_on_large_files >= line('$'))
+                    \ (g:strip_max_file_size == 0 || g:strip_max_file_size >= line('$'))
     endif
     return get(b:, 'strip_whitespace_on_save', g:strip_whitespace_on_save)
 endfunction

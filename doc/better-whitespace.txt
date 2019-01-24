@@ -57,7 +57,7 @@ When stripping whitespace on save, only perform the stripping on the lines
 that have been modified.
 Uses `diff`, which should be available on all platforms (see |E810|).
 
-`g:strip_disabled_on_large_files`                 (defaults to 0)
+`g:strip_max_file_size`                           (defaults to 1000)
 Skip stripping whitespace on files that have more lines than the value in this
 variable. 0 means disabled, thus strip for any file size.  This can be manually
 overriden with |better-whitespace-:EnableStripWhitespaceOnSave| and related commands.
