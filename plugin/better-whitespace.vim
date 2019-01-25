@@ -371,9 +371,9 @@ endfunction
 " Section: Public commands and mappings
 
 " Run :StripWhitespace to remove end of line whitespace *on changed lines*
-command! -bang -range=% StripWhitespaceOnChangedLines for r in <SID>ChangedLines() | call <SID>StripWhitespace(r[0], r[1]) | endfor
+command! -range=% StripWhitespaceOnChangedLines for r in <SID>ChangedLines() | call <SID>StripWhitespace(r[0], r[1]) | endfor
 " Run :StripWhitespace to remove end of line whitespace
-command! -bang -range=% StripWhitespace call <SID>StripWhitespace(<line1>, <line2>)
+command! -range=% StripWhitespace call <SID>StripWhitespace(<line1>, <line2>)
 " Run :EnableStripWhitespaceOnSave to enable whitespace stripping on save
 command! EnableStripWhitespaceOnSave call <SID>EnableStripWhitespaceOnSave()
 " Run :DisableStripWhitespaceOnSave to disable whitespace stripping on save
