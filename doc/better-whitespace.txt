@@ -27,11 +27,15 @@ highlighting of extraneous whitespace for the entire file.
 These functions will respectively take you to the next and previous trailing whitespace
 in the ranged that they are passed (by default the whole file).
 
-:[range]StripWhitespace                         *better-whitespace-:StripWhitespace*
+:[range]StripWhitespace[!]                      *better-whitespace-:StripWhitespace*
 
 Removes extra whitespace, by default on the entire file. To restrict the
 portion of the file that it cleans, either give it a range or select a group
-of lines in visual mode and then execute it.
+of lines in visual mode and then execute it. With the !, ignores &readonly.
+
+:[range]StripWhitespaceOnChangedLines[!]        *better-whitespace-:StripWhitespaceOnChangedLines*
+
+Like :StripWhitespace, but only on the lines that are modified.
 
 :ToggleStripWhitespaceOnSave                    *better-whitespace-:ToggleStripWhitespaceOnSave*
 :EnableStripWhitespaceOnSave                    *better-whitespace-:EnableStripWhitespaceOnSave*

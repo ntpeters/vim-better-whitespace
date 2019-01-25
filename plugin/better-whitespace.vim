@@ -94,7 +94,7 @@ function! s:WhitespaceInit()
     let s:better_whitespace_initialized = 1
 endfunction
 
-" Diff command returning a space-separated list of ranges of new/modified lines (as first,last or first,+num)
+" Diff command returning a space-separated list of ranges of new/modified lines (as first,last)
 let s:diff_cmd='diff -a --unchanged-group-format="" --old-group-format="" --new-group-format="%dF,%dL " --changed-group-format="%dF,%dL " '
 
 " Section: Actual work functions
@@ -198,6 +198,32 @@ function! s:StripWhitespace(line1, line2)
     " Restore the saved search and cursor position
     let @/=_s
     call cursor(l, c)
+endfunction
+
+" Removes all extraneous whitespace in the file
+function! s:StripWhitespaceCommand(line1, line2, force)
+    if &readonly && a:force == 0
+        echoerr "E45: 'readonly' option is set (add ! to override)"
+    else
+        call <SID>StripWhitespace(a:line1, a:line2)
+    endif
+endfunction
+
+" Removes all extraneous whitespace in the file
+function! s:StripWhitespaceOnChangedLinesCommand(line1, line2, force)
+    if &readonly && a:force == 0
+        echoerr "E45: 'readonly' option is set (add ! to override)"
+    else
+        let ranges=<SID>ChangedLines()
+        for r in ranges
+            if r[0] > a:line2
+                break
+            elseif r[1] < a:line1
+                continue
+            endif
+            call <SID>StripWhitespace(max([a:line1, r[0]]), min([a:line2, r[1]]))
+        endfor
+    endif
 endfunction
 
 " Strip using motion lines
@@ -369,11 +395,10 @@ endfunction
 
 
 " Section: Public commands and mappings
-
 " Run :StripWhitespace to remove end of line whitespace *on changed lines*
-command! -range=% StripWhitespaceOnChangedLines for r in <SID>ChangedLines() | call <SID>StripWhitespace(r[0], r[1]) | endfor
+command! -bang -range=% StripWhitespaceOnChangedLines call <SID>StripWhitespaceOnChangedLinesCommand(<line1>, <line2>, <bang>0)
 " Run :StripWhitespace to remove end of line whitespace
-command! -range=% StripWhitespace call <SID>StripWhitespace(<line1>, <line2>)
+command! -bang -range=% StripWhitespace call <SID>StripWhitespaceCommand(<line1>, <line2>, <bang>0)
 " Run :EnableStripWhitespaceOnSave to enable whitespace stripping on save
 command! EnableStripWhitespaceOnSave call <SID>EnableStripWhitespaceOnSave()
 " Run :DisableStripWhitespaceOnSave to disable whitespace stripping on save
