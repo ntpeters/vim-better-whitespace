@@ -161,26 +161,25 @@ if g:current_line_whitespace_disabled_soft == 1
 else
     " Match Whitespace on all lines
     function! s:HighlightEOLWhitespace()
+        call <SID>ClearHighlighting()
         if <SID>ShouldHighlight()
-            exe 'match ExtraWhitespace "' . s:eol_whitespace_pattern . '"'
-        else
-            call <SID>ClearHighlighting()
+            let s:match_id = matchadd('ExtraWhitespace', s:eol_whitespace_pattern, 10, get(s:, 'match_id', -1))
         endif
     endfunction
 
     " Match Whitespace on all lines except the current one
     function! s:HighlightEOLWhitespaceExceptCurrentLine()
+        call <SID>ClearHighlighting()
         if <SID>ShouldHighlight()
-            exe 'match ExtraWhitespace "\%<' . line('.') .  'l' . s:eol_whitespace_pattern .
-                                   \ '\|\%>' . line('.') .  'l' . s:eol_whitespace_pattern . '"'
-        else
-            call <SID>ClearHighlighting()
+            let s:match_id = matchadd('ExtraWhitespace',
+                        \   '\%<' . line('.') .  'l' . s:eol_whitespace_pattern .
+                        \ '\|\%>' . line('.') .  'l' . s:eol_whitespace_pattern, 10, get(s:, 'match_id', -1))
         endif
     endfunction
 
     " Remove Whitespace matching
     function! s:ClearHighlighting()
-        match ExtraWhitespace ''
+        silent! call matchdelete(get(s:, 'match_id', -1))
     endfunction
 endif
 
