@@ -181,7 +181,7 @@ function! s:StripWhitespace(line1, line2)
     let l = line('.')
     let c = col('.')
 
-    silent! execute ':' . a:line1 . ',' . a:line2 . 's/' . s:strip_whitespace_pattern . '//e'
+    silent execute ':' . a:line1 . ',' . a:line2 . 's/' . s:strip_whitespace_pattern . '//e'
 
     " Strip empty lines at EOF
     if g:strip_whitelines_at_eof == 1 && a:line2 >= line('$')
@@ -192,7 +192,7 @@ function! s:StripWhitespace(line1, line2)
         else " unix
             let nl='\n'
         endif
-        silent! execute '%s/\('.nl.'\)\+\%$//'
+        silent execute '%s/\('.nl.'\)\+\%$//e'
     endif
 
     " Restore the saved search and cursor position
