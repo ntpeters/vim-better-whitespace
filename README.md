@@ -60,25 +60,21 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     :ToggleWhitespace
     ```
 
-*  To disable highlighting for the current line in normal mode call:
-    ```vim
-    :CurrentLineWhitespaceOff <level>
-    ```
-    Where `<level>` is either `hard` or `soft`.
-
-    *  The level `hard` will maintain whitespace highlighting as it is, but may
-        cause a slow down in Vim since it uses the CursorMoved event to detect and
+*  The highlighting for the current line in normal mode can be disabled in two ways:
+    *  ```vim
+       let g:current_line_whitespace_disabled_hard=1
+       ```
+        This will maintain whitespace highlighting as it is, but may cause a
+        slow down in Vim since it uses the CursorMoved event to detect and
         exclude the current line.
 
-    *  The level `soft` will use syntax based highlighting, so there shouldn't be
-        a performance hit like with the `hard` option.  The drawback is that this
-        highlighting will have a lower priority and may be overwritten by higher
-        priority highlighting.
-
-*  To re-enable highlighting for the current line in normal mode:
-    ```vim
-    :CurrentLineWhitespaceOn
-    ```
+    *  ```vim
+       let g:current_line_whitespace_disabled_soft=1
+       ```
+       This will use syntax based highlighting, so there shouldn't be a
+       performance hit like with the `hard` option.  The drawback is that this
+       highlighting will have a lower priority and may be overwritten by higher
+       priority highlighting.
 
 *  To clean extra whitespace, call:
     ```vim
@@ -127,6 +123,30 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
 
         where `<desired_filetypes>` is a comma separated list of the file types you want
         to be stripped of whitespace on file save ( ie. `javascript,c,cpp,java,html,ruby` )
+
+    *  If you want to disable automatically stripping whitespace for large files, you can specify
+       a maximum number of lines (e.g. 1000) by adding the following to your `~/.vimrc`:
+
+       ```vim
+       let g:strip_max_file_size = 1000
+       ```
+
+       This overrides `let g:strip_whitespace_on_save` but not `:EnableStripWhitespaceOnSave`.
+       Set to `0` to deactivate.
+
+    *  By default, you will be asked for confirmation before whitespace is
+       stripped when you save the file. This can be disabled by adding the
+       following to your `~/.vimrc`:
+       ```
+       let g:strip_whitespace_confirm=0
+       ```
+
+    *  By default, all the lines in the file will have their trailing whitespace stripped
+       when you save the file. This can be changed to only the modified lines, by adding
+       the following to your `~/.vimrc`:
+       ```
+       let g:strip_only_modified_lines=0
+       ```
 
 *  To disable this plugin for specific file types, add the following to your `~/.vimrc`:
     ```vim
@@ -299,6 +319,43 @@ A:  If you know of a better way to do something I am attempting in this plugin, 
     something improperly/not reccomended then let me know! Please either open an issue informing
     me or make the changes yourself and open a pull request. If I am doing something that is bad
     or can be improved, I am more than willing to hear about it!
+
+## Deprecated commands
+Toggling the current line whitespace mode is now a plugin configuration,
+and can not be done dynamically anymore. Thus the folowing commands are now deprecated:
+
+```vim
+:CurrentLineWhitespaceOff <level>
+```
+where `<level>` is either `hard` or `soft`, and:
+
+```vim
+:CurrentLineWhitespaceOn
+```
+
+If you really miss this feature, its withdrawal can easily be overriden
+by adding the following to the vimrc (after loading the plugin initially):
+
+```vim
+fun! BetterWhitespaceCurrentLineMode(type)
+        " set setting to whatever was passed
+        let g:current_line_whitespace_disabled_soft=a:type == 'soft'
+        let g:current_line_whitespace_disabled_hard=a:type == 'hard'
+        " reload plugin
+        unlet! g:loaded_better_whitespace_plugin
+        runtime plugin/better-whitespace.vim
+        " Re-override the deprecated commands
+        command! -nargs=1 CurrentLineWhitespaceOff call BetterWhitespaceCurrentLineMode(<f-args>)
+        command! CurrentLineWhitespaceOn call BetterWhitespaceCurrentLineMode('off')
+        " Manually trigger change for current buffer.
+        " BufWinEnter will take care of the rest.
+        filetype detect
+endfun
+
+" Override deprecated commands, after (!) loading plugin
+command! -nargs=1 CurrentLineWhitespaceOff call BetterWhitespaceCurrentLineMode(<f-args>)
+command! CurrentLineWhitespaceOn call BetterWhitespaceCurrentLineMode('off')
+```
 
 ## Promotion
 If you like this plugin, please star it on Github and vote it up at Vim.org!
