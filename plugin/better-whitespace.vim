@@ -435,5 +435,5 @@ endif
 
 " Deprecated legacy commands, set for compatiblity and to point users in the right direction.
 let s:errmsg='please set g:current_line_whitespace_disabled_{soft,hard} and reload better whitespace'
-command! -nargs=* CurrentLineWhitespaceOff echoerr 'Deprecated command CurrentLineWhitespaceOff: '.s:errmsg
-command! CurrentLineWhitespaceOn echoerr 'Deprecated command CurrentLineWhitespaceOn: '.s:errmsg
+command! -nargs=* CurrentLineWhitespaceOff echoerr 'E492: Deprecated command CurrentLineWhitespaceOff: '.s:errmsg
+command! CurrentLineWhitespaceOn echoerr 'E492: Deprecated command CurrentLineWhitespaceOn: '.s:errmsg
