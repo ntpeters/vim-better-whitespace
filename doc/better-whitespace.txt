@@ -45,6 +45,14 @@ This enables/disables stripping of extra whitespace on file save.
 If `g:strip_only_modified_lines` is set to 1, only modified lines will be stripped.
 
 
+DEPRECATED:  :CurrentLineWhitespaceOn and :CurrentLineWhitespaceOff with the
+option either 'hard' or 'soft' are now deprecated and replaced by the
+following preferences:
+`g:current_line_whitespace_disabled_hard`
+`g:current_line_whitespace_disabled_soft`
+
+
+
 PREFERENCES                                     *better-whitespace-preferences*
 
 `g:better_whitespace_enabled`                     (defaults to 1)
@@ -112,6 +120,7 @@ strip whitespace from the end of lines.
 
 `g:better_whitespace_skip_empty_lines`            (defaults to 0)
 Skips empty (whitespace-only) lines for highlighting.
+
 
 
 Repository exists at: http://github.com/ntpeters/vim-better-whitespace
