@@ -48,7 +48,7 @@ call s:InitVariable('strip_whitespace_on_save', 0)
 call s:InitVariable('strip_whitelines_at_eof', 0)
 
 " Set this to enable user confirmation before stripping whitespace on file save
-call s:InitVariable('strip_whitespace_confirm', 1)
+call s:InitVariable('strip_whitespace_confirm', 0)
 
 " Set this to blacklist specific filetypes
 call s:InitVariable('better_whitespace_filetypes_blacklist', ['diff', 'gitcommit', 'unite', 'qf', 'help', 'markdown'])
@@ -248,7 +248,7 @@ endfunction
 function! s:StripWhitespaceOnSave(force)
     let ranges = g:strip_only_modified_lines ? <SID>ChangedLines() : [[1,line('$')]]
 
-    if g:strip_whitespace_confirm == 1 && a:force == 0
+    if (g:strip_whitespace_confirm == 1 || &confirm) && a:force == 0
         let l = line(".")
         let c = col(".")
         let found = 0
