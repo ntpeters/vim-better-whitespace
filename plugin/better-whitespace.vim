@@ -95,7 +95,7 @@ function! s:WhitespaceInit()
 endfunction
 
 " Diff command returning a space-separated list of ranges of new/modified lines (as first,last)
-let s:diff_cmd='diff -a --unchanged-group-format="" --old-group-format="" --new-group-format="%dF,%dL " --changed-group-format="%dF,%dL " '
+let s:diff_cmd='/bin/diff -a --unchanged-group-format="" --old-group-format="" --new-group-format="%dF,%dL " --changed-group-format="%dF,%dL " '
 
 " Section: Actual work functions
 
