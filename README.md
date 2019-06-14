@@ -148,6 +148,13 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
        let g:strip_only_modified_lines=0
        ```
 
+    *  You can override the binary used to check which lines have been modified in the file.
+       For example to force a 'diff' installed in a different prefix and ignoring the changes
+       due to tab expansions, you can set the following:
+       ```
+       let g:diff_binary='/usr/local/bin/diff -E'
+       ```
+
 *  To disable this plugin for specific file types, add the following to your `~/.vimrc`:
     ```vim
     let g:better_whitespace_filetypes_blacklist=['<filetype1>', '<filetype2>', '<etc>']

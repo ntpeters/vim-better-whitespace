@@ -65,6 +65,12 @@ call s:InitVariable('strip_max_file_size', 1000)
 " Disable verbosity by default
 call s:InitVariable('better_whitespace_verbosity', 0)
 
+" Bypass the aliases set for diff by default
+if has("win32") || has("win16")
+    call s:InitVariable('diff_binary', 'diff')
+else
+    call s:InitVariable('diff_binary', 'command diff')
+endif
 
 " Section: Whitespace matching setup
 
@@ -95,7 +101,7 @@ function! s:WhitespaceInit()
 endfunction
 
 " Diff command returning a space-separated list of ranges of new/modified lines (as first,last)
-let s:diff_cmd='diff -a --unchanged-group-format="" --old-group-format="" --new-group-format="%dF,%dL " --changed-group-format="%dF,%dL " '
+let s:diff_cmd=g:diff_binary.' -a --unchanged-group-format="" --old-group-format="" --new-group-format="%dF,%dL " --changed-group-format="%dF,%dL " '
 
 " Section: Actual work functions
 

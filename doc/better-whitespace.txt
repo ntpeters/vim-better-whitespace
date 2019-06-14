@@ -67,7 +67,13 @@ Overrides `g:better_whitespace_enabled`, and can be manually overriden with
 `g:strip_only_modified_lines`                     (defaults to 0)
 When stripping whitespace on save, only perform the stripping on the lines
 that have been modified.
-Uses `diff`, which should be available on all platforms (see |E810|).
+Uses an external `diff` command set in `g:diff_binary`, which should be
+available on all platforms (see |E810|).
+
+`g:diff_binary`
+The binary to use to check which lines have been modified in a file. Defaults
+to 'diff' on windows and 'command diff' on unix-like platforms (linux, mac OS,
+etc.) to bypass any shell aliases or default options for diff.
 
 `g:strip_max_file_size`                           (defaults to 1000)
 Skip stripping whitespace on files that have more lines than the value in this
