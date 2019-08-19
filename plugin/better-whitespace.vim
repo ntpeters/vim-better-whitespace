@@ -99,6 +99,17 @@ let s:diff_cmd='diff -a --unchanged-group-format="" --old-group-format="" --new-
 
 " Section: Actual work functions
 
+" Function to implement trim() fro vim < 8.0.1630
+if v:version > 800 || (v:version == 800 && has('patch-1630'))
+    function! s:Trim(s)
+        return trim(a:s)
+    endfunction
+else
+    function! s:Trim(s)
+        return substitute(a:s, '^\s*\(.\{-}\)\s*$', '\1', '')
+    endfunction
+endif
+
 " query per-buffer setting for whitespace highlighting
 function! s:ShouldHighlight()
     " Guess from the filetype if a) not locally decided, b) globally enabled, c) there is enough information
@@ -239,7 +250,7 @@ function! s:ChangedLines()
         redir => l:better_whitespace_changes_list
             silent! echo system(s:diff_cmd.' '.shellescape(expand('%')).' -', join(getline(1, line('$')), "\n") . "\n")
         redir END
-        return map(split(trim(l:better_whitespace_changes_list), ' '), 'split(v:val, ",")')
+        return map(split(s:Trim(l:better_whitespace_changes_list), ' '), 'split(v:val, ",")')
     endif
     return []
 endfunction
