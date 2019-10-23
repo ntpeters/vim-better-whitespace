@@ -67,7 +67,7 @@ call s:InitVariable('better_whitespace_verbosity', 0)
 
 " Bypass the aliases set for diff by default
 if has("win32") || has("win16")
-    call s:InitVariable('diff_binary', 'diff')
+    call s:InitVariable('diff_binary', 'diff.exe')
 else
     call s:InitVariable('diff_binary', 'command diff')
 endif
