@@ -145,10 +145,17 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
        when you save the file. This can be changed to only the modified lines, by adding
        the following to your `~/.vimrc`:
        ```
-       let g:strip_only_modified_lines=0
+       let g:strip_only_modified_lines=1
        ```
 
-*  To disable this plugin for specific file types, add the following to your `~/.vimrc`:
+    *  You can override the binary used to check which lines have been modified in the file.
+       For example to force a 'diff' installed in a different prefix and ignoring the changes
+       due to tab expansions, you can set the following:
+       ```
+       let g:diff_binary='/usr/local/bin/diff -E'
+       ```
+
+*  To disable the highlighting for specific file types, add the following to your `~/.vimrc`:
     ```vim
     let g:better_whitespace_filetypes_blacklist=['<filetype1>', '<filetype2>', '<etc>']
     ```
@@ -157,7 +164,7 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     ```vim
     ['diff', 'gitcommit', 'unite', 'qf', 'help', 'markdown']
     ```
-    If you do not want any of these filetypes unignored, simply include them in the
+    If you prefer to also keep these default filetypes ignored, simply include them in the
     blacklist:
     ```vim
     let g:better_whitespace_filetypes_blacklist=['<filetype1>', '<filetype2>', '<etc>',
