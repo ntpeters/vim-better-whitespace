@@ -145,7 +145,7 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
        when you save the file. This can be changed to only the modified lines, by adding
        the following to your `~/.vimrc`:
        ```
-       let g:strip_only_modified_lines=0
+       let g:strip_only_modified_lines=1
        ```
 
     *  You can override the binary used to check which lines have been modified in the file.
