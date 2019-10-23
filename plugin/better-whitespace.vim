@@ -105,8 +105,8 @@ let s:diff_cmd=g:diff_binary.' -a --unchanged-group-format="" --old-group-format
 
 " Section: Actual work functions
 
-" Function to implement trim() fro vim < 8.0.1630
-if v:version > 800 || (v:version == 800 && has('patch-1630'))
+" Function to implement trim() if it does not exist
+if exists('*trim')
     function! s:Trim(s)
         return trim(a:s)
     endfunction
