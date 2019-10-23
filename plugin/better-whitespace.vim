@@ -112,7 +112,7 @@ if v:version > 800 || (v:version == 800 && has('patch-1630'))
     endfunction
 else
     function! s:Trim(s)
-        return substitute(a:s, '^\s*\(.\{-}\)\s*$', '\1', '')
+        return substitute(a:s, '^\_s*\(.\{-}\)\_s*$', '\1', '')
     endfunction
 endif
 
