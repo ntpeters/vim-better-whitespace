@@ -155,7 +155,7 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
        let g:diff_binary='/usr/local/bin/diff -E'
        ```
 
-*  To disable this plugin for specific file types, add the following to your `~/.vimrc`:
+*  To disable the highlighting for specific file types, add the following to your `~/.vimrc`:
     ```vim
     let g:better_whitespace_filetypes_blacklist=['<filetype1>', '<filetype2>', '<etc>']
     ```
@@ -164,7 +164,7 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     ```vim
     ['diff', 'gitcommit', 'unite', 'qf', 'help', 'markdown']
     ```
-    If you do not want any of these filetypes unignored, simply include them in the
+    If you prefer to also keep these default filetypes ignored, simply include them in the
     blacklist:
     ```vim
     let g:better_whitespace_filetypes_blacklist=['<filetype1>', '<filetype2>', '<etc>',
