@@ -201,12 +201,10 @@ function! s:StripWhitespace(line1, line2)
 
     " Strip empty lines at EOF
     if g:strip_whitelines_at_eof >= 1 && a:line2 >= line('$')
-        if &ff == 'dos'
-            let nl='\r\n'
-        elseif &ff == 'max'
-            let nl='\r'
-        else " unix
+        if &ff == 'dos' || &ff == 'unix'
             let nl='\n'
+        elseif &ff == 'mac'
+            let nl='\r'
         endif
         silent execute '%s/\('.nl.'\)\+\%$//e'
         " Add trailing newline at EOF
@@ -457,3 +455,4 @@ endif
 let s:errmsg='please set g:current_line_whitespace_disabled_{soft,hard} and reload better whitespace'
 command! -nargs=* CurrentLineWhitespaceOff echoerr 'E492: Deprecated command CurrentLineWhitespaceOff: '.s:errmsg
 command! CurrentLineWhitespaceOn echoerr 'E492: Deprecated command CurrentLineWhitespaceOn: '.s:errmsg
+
