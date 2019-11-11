@@ -185,6 +185,12 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     let g:strip_whitelines_at_eof=1
     ```
 
+*  To add a single trailing newline at the end of the file when stripping whitespace, set this option in your `.vimrc`:
+    ```vim
+    let g:strip_whitelines_at_eof=2
+    ```
+
+*  To highlight space characters that appear before or in-between tabs, add the following to your `.vimrc`:
 *  To highlight space characters that appear before or in-between tabs, add the following to your `.vimrc`:
     ```vim
     let g:show_spaces_that_precede_tabs=1
