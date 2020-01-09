@@ -109,7 +109,7 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     *  If you want this behaviour by default for all filetypes, add the following to your `~/.vimrc`:
 
         ```vim
-        let g:strip_whitespace_on_save = 1
+        let g:strip_whitespace_on_save=1
         ```
 
         For exceptions of all see ```g:better_whitespace_filetypes_blacklist```.
@@ -128,7 +128,7 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
        a maximum number of lines (e.g. 1000) by adding the following to your `~/.vimrc`:
 
        ```vim
-       let g:strip_max_file_size = 1000
+       let g:strip_max_file_size=1000
        ```
 
        This overrides `let g:strip_whitespace_on_save` but not `:EnableStripWhitespaceOnSave`.
