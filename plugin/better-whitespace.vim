@@ -201,14 +201,7 @@ function! s:StripWhitespace(line1, line2)
 
     " Strip empty lines at EOF
     if g:strip_whitelines_at_eof == 1 && a:line2 >= line('$')
-        if &ff == 'dos'
-            let nl='\r\n'
-        elseif &ff == 'max'
-            let nl='\r'
-        else " unix
-            let nl='\n'
-        endif
-        silent execute '%s/\('.nl.'\)\+\%$//e'
+        silent execute '%s/\(\n\)\+\%$//e'
     endif
 
     " Restore the saved search and cursor position
