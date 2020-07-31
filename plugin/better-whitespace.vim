@@ -51,7 +51,7 @@ call s:InitVariable('strip_whitelines_at_eof', 0)
 call s:InitVariable('strip_whitespace_confirm', 1)
 
 " Set this to blacklist specific filetypes
-call s:InitVariable('better_whitespace_filetypes_blacklist', ['diff', 'gitcommit', 'unite', 'qf', 'help', 'markdown'])
+call s:InitVariable('better_whitespace_filetypes_blacklist', ['diff', 'gitcommit', 'unite', 'qf', 'help', 'markdown', 'fugitive'])
 
 " Skip empty (whitespace-only) lines for highlighting
 call s:InitVariable('better_whitespace_skip_empty_lines', 0)
@@ -119,8 +119,8 @@ endif
 " query per-buffer setting for whitespace highlighting
 function! s:ShouldHighlight()
     " Guess from the filetype if a) not locally decided, b) globally enabled, c) there is enough information
-    if !exists('b:better_whitespace_enabled') && g:better_whitespace_enabled == 1 && !(empty(&buftype) && empty(&filetype))
-        let b:better_whitespace_enabled = &buftype != 'nofile' && &buftype != 'popup' && index(g:better_whitespace_filetypes_blacklist, &ft) == -1
+    if get(b:, 'better_whitespace_guess', 1) && g:better_whitespace_enabled == 1
+        let b:better_whitespace_enabled = (empty(&buftype) || &buftype == 'acwrite') && index(g:better_whitespace_filetypes_blacklist, &ft) == -1
     endif
     return get(b:, 'better_whitespace_enabled', g:better_whitespace_enabled)
 endfunction
@@ -128,7 +128,7 @@ endfunction
 " query per-buffer setting for whitespace stripping
 function! s:ShouldStripWhitespaceOnSave()
     " Guess from local whitespace enabled-ness and global whitespace setting
-    if !exists('b:strip_whitespace_on_save') && exists('b:better_whitespace_enabled')
+    if get(b:, 'strip_whitespace_guess', 1) && exists('b:better_whitespace_enabled')
         let b:strip_whitespace_on_save = b:better_whitespace_enabled && g:strip_whitespace_on_save && &modifiable &&
                     \ (g:strip_max_file_size == 0 || g:strip_max_file_size >= line('$'))
     endif
@@ -374,31 +374,37 @@ autocmd ColorScheme * call <SID>WhitespaceInit()
 
 function! s:EnableWhitespace()
     let b:better_whitespace_enabled = 1
+    let b:better_whitespace_guess = 0
     call <SID>SetupAutoCommands()
 endfunction
 
 function! s:DisableWhitespace()
     let b:better_whitespace_enabled = 0
+    let b:better_whitespace_guess = 0
     call <SID>SetupAutoCommands()
 endfunction
 
 function! s:ToggleWhitespace()
     let b:better_whitespace_enabled = 1 - <SID>ShouldHighlight()
+    let b:better_whitespace_guess = 0
     call <SID>SetupAutoCommands()
 endfunction
 
 function! s:EnableStripWhitespaceOnSave()
     let b:strip_whitespace_on_save = 1
+    let b:strip_whitespace_guess = 0
     call <SID>SetupAutoCommands()
 endfunction
 
 function! s:DisableStripWhitespaceOnSave()
     let b:strip_whitespace_on_save = 0
+    let b:strip_whitespace_guess = 0
     call <SID>SetupAutoCommands()
 endfunction
 
 function! s:ToggleStripWhitespaceOnSave()
     let b:strip_whitespace_on_save = 1 - <SID>ShouldStripWhitespaceOnSave()
+    let b:strip_whitespace_guess = 0
     call <SID>SetupAutoCommands()
 endfunction
 
