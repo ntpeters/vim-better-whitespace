@@ -51,7 +51,7 @@ call s:InitVariable('strip_whitelines_at_eof', 0)
 call s:InitVariable('strip_whitespace_confirm', 1)
 
 " Set this to blacklist specific filetypes
-call s:InitVariable('better_whitespace_filetypes_blacklist', ['diff', 'gitcommit', 'unite', 'qf', 'help', 'markdown'])
+call s:InitVariable('better_whitespace_filetypes_blacklist', ['diff', 'git', 'gitcommit', 'unite', 'qf', 'help', 'markdown'])
 
 " Skip empty (whitespace-only) lines for highlighting
 call s:InitVariable('better_whitespace_skip_empty_lines', 0)
