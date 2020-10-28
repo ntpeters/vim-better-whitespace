@@ -162,14 +162,14 @@ Whitespace highlighting is enabled by default, with a highlight color of red.
     This replaces the filetypes from the default list of blacklisted filetypes. The
     default types that are blacklisted are:
     ```vim
-    ['diff', 'git', 'gitcommit', 'unite', 'qf', 'help', 'markdown']
+    ['diff', 'git', 'gitcommit', 'unite', 'qf', 'help', 'markdown', 'minimap']
     ```
     If you prefer to also keep these default filetypes ignored, simply include them in the
     blacklist:
     ```vim
     let g:better_whitespace_filetypes_blacklist=['<filetype1>', '<filetype2>', '<etc>',
                                             'diff', 'git', 'gitcommit', 'unite', 'qf',
-                                            'help', 'markdown']
+                                            'help', 'markdown', 'minimap']
     ```
 
     This blacklist can be overriden on a per-buffer basis using the buffer toggle enable and
