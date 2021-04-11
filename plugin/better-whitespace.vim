@@ -84,6 +84,7 @@ if g:better_whitespace_skip_empty_lines == 1
 endif
 
 let s:strip_whitespace_pattern = s:eol_whitespace_pattern
+let s:strip_whitelines_pattern = '\(\n\)\+\%$'
 if g:show_spaces_that_precede_tabs == 1
     let s:eol_whitespace_pattern .= '\|[' . s:whitespace_chars . ']\+\ze[\u0009]'
 endif
@@ -187,7 +188,11 @@ endif
 " WARNING: moves the cursor.
 function! s:DetectWhitespace(line1, line2)
     call cursor(a:line1, 1)
-    return search(s:strip_whitespace_pattern, 'cn', a:line2)
+    let found = search(s:strip_whitespace_pattern, 'cn', a:line2)
+    if g:strip_whitelines_at_eof == 1 && a:line2 >= line('$')
+        let found += search(s:strip_whitelines_pattern, 'cn')
+    endif
+    return found
 endfunction
 
 " Removes all extraneous whitespace in the file
@@ -201,7 +206,7 @@ function! s:StripWhitespace(line1, line2)
 
     " Strip empty lines at EOF
     if g:strip_whitelines_at_eof == 1 && a:line2 >= line('$')
-        silent execute '%s/\(\n\)\+\%$//e'
+        silent execute '%s/' . s:strip_whitelines_pattern . '//e'
     endif
 
     " Restore the saved search and cursor position
