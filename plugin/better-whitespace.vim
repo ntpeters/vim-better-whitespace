@@ -116,6 +116,14 @@ else
     endfunction
 endif
 
+" Function that clears the search entries of BetterWhiteSpace by rolling back to the given index
+function! s:RestoreSearchHistory(index)
+    while histnr('search') > a:index
+        call histdel('search', -1)
+    endwhile
+    let @/ = histget('search', -1)
+endfunction
+
 " query per-buffer setting for whitespace highlighting
 function! s:ShouldHighlight()
     " Guess from the filetype if a) not locally decided, b) globally enabled, c) there is enough information
@@ -193,7 +201,7 @@ endfunction
 " Removes all extraneous whitespace in the file
 function! s:StripWhitespace(line1, line2)
     " Save the current search and cursor position
-    let _s=@/
+    let _s = histnr('search')
     let l = line('.')
     let c = col('.')
 
@@ -205,7 +213,7 @@ function! s:StripWhitespace(line1, line2)
     endif
 
     " Restore the saved search and cursor position
-    let @/=_s
+    call <SID>RestoreSearchHistory(_s)
     call cursor(l, c)
 endfunction
 
