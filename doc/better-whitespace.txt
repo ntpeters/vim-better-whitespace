@@ -58,8 +58,9 @@ PREFERENCES                                     *better-whitespace-preferences*
 `g:better_whitespace_enabled`                     (defaults to 1)
 Set this to enable whitespace highlighting by default, set to 0 to disable it.
 
-`g:better_whitespace_filetypes_blacklist`         (defaults to ['diff', 'gitcommit',
-                                                'unite', 'qf', 'help', 'markdown'])
+`g:better_whitespace_filetypes_blacklist`         (defaults to ['diff', 'git',
+                                                'gitcommit','unite', 'qf', 'help',
+                                                'markdown', 'fugitive'])
 Disables better-whitespace by default on these file types.
 Overrides `g:better_whitespace_enabled`, and can be manually overriden with
 |better-whitespace-:EnableWhitespace| and related commands.
