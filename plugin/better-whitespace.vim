@@ -118,7 +118,7 @@ endif
 
 " Function that clears the search entries of BetterWhiteSpace by rolling back to the given index
 function! s:RestoreSearchHistory(index)
-    while a:index != -1 && histnr('search') > a:index
+    while histnr('search') > max([a:index, 0])
         call histdel('search', -1)
     endwhile
     let @/ = histget('search', -1)
