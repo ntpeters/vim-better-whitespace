@@ -172,8 +172,7 @@ else
     function! s:HighlightEOLWhitespace()
         call <SID>ClearHighlighting()
         if <SID>ShouldHighlight()
-            let w:better_whitespace_match_id = matchadd('ExtraWhitespace',
-                        \  s:eol_whitespace_pattern, 10, get(s:, 'better_whitespace_match_id', -1))
+            let s:match_id = matchadd('ExtraWhitespace', s:eol_whitespace_pattern, 10, get(s:, 'match_id', -1))
         endif
     endfunction
 
@@ -181,18 +180,15 @@ else
     function! s:HighlightEOLWhitespaceExceptCurrentLine()
         call <SID>ClearHighlighting()
         if <SID>ShouldHighlight()
-            let w:better_whitespace_match_id = matchadd('ExtraWhitespace',
+            let s:match_id = matchadd('ExtraWhitespace',
                         \   '\%<' . line('.') .  'l' . s:eol_whitespace_pattern .
-                        \ '\|\%>' . line('.') .  'l' . s:eol_whitespace_pattern, 10, get(s:, 'better_whitespace_match_id', -1))
+                        \ '\|\%>' . line('.') .  'l' . s:eol_whitespace_pattern, 10, get(s:, 'match_id', -1))
         endif
     endfunction
 
     " Remove Whitespace matching
     function! s:ClearHighlighting()
-        let match_id = get(w:, 'better_whitespace_match_id', -1)
-        if match_id >= 0
-            call matchdelete(match_id)
-        endif
+        silent! call matchdelete(get(s:, 'match_id', -1))
     endfunction
 endif
 
