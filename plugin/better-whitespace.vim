@@ -387,6 +387,13 @@ endfunction
 autocmd FileType,WinEnter,BufWinEnter * call <SID>SetupAutoCommands()
 autocmd ColorScheme * call <SID>WhitespaceInit()
 
+" Also check on specific buftype changes
+if has('nvim')
+    autocmd TermOpen * call <SID>SetupAutoCommands()
+else
+    autocmd TerminalWinOpen * call <SID>SetupAutoCommands()
+endif
+
 
 " Section: Setting of per-buffer higlighting/stripping
 
