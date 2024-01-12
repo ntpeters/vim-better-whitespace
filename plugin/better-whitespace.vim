@@ -390,7 +390,7 @@ autocmd ColorScheme * call <SID>WhitespaceInit()
 " Also check on specific buftype changes
 if has('nvim')
     autocmd TermOpen * call <SID>SetupAutoCommands()
-else
+elseif exists('##TerminalWinOpen')
     autocmd TerminalWinOpen * call <SID>SetupAutoCommands()
 endif
 
