@@ -345,7 +345,7 @@ endfunction
 function! <SID>SetupAutoCommands()
     augroup better_whitespace
         " Reset all auto commands in group
-        autocmd!
+        autocmd! * <buffer>
 
         if <SID>ShouldHighlight()
             if s:better_whitespace_initialized == 0
@@ -354,19 +354,19 @@ function! <SID>SetupAutoCommands()
 
             " Highlight extraneous whitespace at the end of lines, but not the current line in insert mode.
             call <SID>HighlightEOLWhitespace()
-            autocmd CursorMovedI,InsertEnter * call <SID>HighlightEOLWhitespaceExceptCurrentLine()
-            autocmd InsertLeave,BufReadPost * call <SID>HighlightEOLWhitespace()
+            autocmd CursorMovedI,InsertEnter <buffer> call <SID>HighlightEOLWhitespaceExceptCurrentLine()
+            autocmd InsertLeave,BufReadPost <buffer> call <SID>HighlightEOLWhitespace()
 
             if g:current_line_whitespace_disabled_soft == 0
                 " Using syntax: clear whitespace highlighting when leaving buffer
-                autocmd BufWinLeave * if expand("<afile>") == expand("%") | call <SID>ClearHighlighting() | endif
+                autocmd BufWinLeave <buffer> if expand("<afile>") == expand("%") | call <SID>ClearHighlighting() | endif
 
                 " Do not highlight whitespace on current line in insert mode
-                autocmd CursorMovedI * call <SID>HighlightEOLWhitespaceExceptCurrentLine()
+                autocmd CursorMovedI <buffer> call <SID>HighlightEOLWhitespaceExceptCurrentLine()
 
                 " Do not highlight whitespace on current line in normal mode?
                 if g:current_line_whitespace_disabled_hard == 1
-                    autocmd CursorMoved * call <SID>HighlightEOLWhitespaceExceptCurrentLine()
+                    autocmd CursorMoved <buffer> call <SID>HighlightEOLWhitespaceExceptCurrentLine()
                 endif
             endif
 
@@ -377,7 +377,7 @@ function! <SID>SetupAutoCommands()
 
         " Strip whitespace on save if enabled.
         if <SID>ShouldStripWhitespaceOnSave()
-            autocmd BufWritePre * call <SID>StripWhitespaceOnSave(v:cmdbang)
+            autocmd BufWritePre <buffer> call <SID>StripWhitespaceOnSave(v:cmdbang)
         endif
 
     augroup END
