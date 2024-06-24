@@ -102,7 +102,7 @@ function! s:WhitespaceInit()
 endfunction
 
 " Diff command returning a space-separated list of ranges of new/modified lines (as first,last)
-let s:diff_cmd=g:diff_binary.' -a --unchanged-group-format="" --old-group-format="" --new-group-format="%dF,%dL " --changed-group-format="%dF,%dL " '
+let s:diff_cmd=g:diff_binary.' -a'
 
 " Section: Actual work functions
 
@@ -266,7 +266,10 @@ function! s:ChangedLines()
         redir => l:better_whitespace_changes_list
             silent! echo system(s:diff_cmd.' '.shellescape(expand('%')).' -', join(getline(1, line('$')), "\n") . "\n")
         redir END
-        return map(split(s:Trim(l:better_whitespace_changes_list), ' '), 'split(v:val, ",")')
+        " Get relevant lines (added/changed group headers)
+        let lines=filter(split(l:better_whitespace_changes_list, '\n'), 'match(v:val, "^[0-9,]*[ac][0-9,]*$") > -1')
+        " Extract first,last line info (repeat first,first if there’s only first line)
+        return map(map(lines, 'split(split(v:val, "[ac]")[1], ",")'), 'len(v:val) == 1 ? v:val + v:val : v:val')
     endif
     return []
 endfunction
