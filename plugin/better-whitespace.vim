@@ -364,9 +364,6 @@ function! <SID>SetupAutoCommands()
                 " Using syntax: clear whitespace highlighting when leaving buffer
                 autocmd BufWinLeave <buffer> if expand("<afile>") == expand("%") | call <SID>ClearHighlighting() | endif
 
-                " Do not highlight whitespace on current line in insert mode
-                autocmd CursorMovedI <buffer> call <SID>HighlightEOLWhitespaceExceptCurrentLine()
-
                 " Do not highlight whitespace on current line in normal mode?
                 if g:current_line_whitespace_disabled_hard == 1
                     autocmd CursorMoved <buffer> call <SID>HighlightEOLWhitespaceExceptCurrentLine()
