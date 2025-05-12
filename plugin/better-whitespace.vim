@@ -152,20 +152,28 @@ if g:current_line_whitespace_disabled_soft == 1
         if <SID>ShouldHighlight()
             exe 'syn match ExtraWhitespace excludenl "' . s:eol_whitespace_pattern . '"'
         endif
+        let w:better_whitespace_current_line = -1
     endfunction
 
     " Match Whitespace on all lines except the current one
     function! s:HighlightEOLWhitespaceExceptCurrentLine()
-        call <SID>ClearHighlighting()
-        if <SID>ShouldHighlight()
+        if !<SID>ShouldHighlight()
+            call <SID>ClearHighlighting()
+            return
+        endif
+
+        if !exists('w:better_whitespace_current_line') || w:better_whitespace_current_line !=# line('.')
+            call <SID>ClearHighlighting()
             exe 'syn match ExtraWhitespace excludenl "\%<' . line('.') .  'l' . s:eol_whitespace_pattern .
                                                  \ '\|\%>' . line('.') .  'l' . s:eol_whitespace_pattern . '"'
+            let w:better_whitespace_current_line = line('.')
         endif
     endfunction
 
     " Remove Whitespace matching
     function! s:ClearHighlighting()
         syn clear ExtraWhitespace
+        let w:better_whitespace_current_line = -1
     endfunction
 else
     " Match Whitespace on all lines
@@ -175,15 +183,22 @@ else
             let w:better_whitespace_match_id = matchadd('ExtraWhitespace',
                         \  s:eol_whitespace_pattern, 10, get(w:, 'better_whitespace_match_id', -1))
         endif
+        let w:better_whitespace_current_line = -1
     endfunction
 
     " Match Whitespace on all lines except the current one
     function! s:HighlightEOLWhitespaceExceptCurrentLine()
-        call <SID>ClearHighlighting()
-        if <SID>ShouldHighlight()
+        if !<SID>ShouldHighlight()
+            call <SID>ClearHighlighting()
+            return
+        endif
+
+        if !exists('w:better_whitespace_current_line') || w:better_whitespace_current_line !=# line('.')
+            call <SID>ClearHighlighting()
             let w:better_whitespace_match_id = matchadd('ExtraWhitespace',
                         \   '\%<' . line('.') .  'l' . s:eol_whitespace_pattern .
                         \ '\|\%>' . line('.') .  'l' . s:eol_whitespace_pattern, 10, get(w:, 'better_whitespace_match_id', -1))
+            let w:better_whitespace_current_line = line('.')
         endif
     endfunction
 
@@ -194,6 +209,7 @@ else
         if match_id >= 0 && index(valid_ids, match_id) >= 0
             call matchdelete(match_id)
         endif
+        let w:better_whitespace_current_line = -1
     endfunction
 endif
 
